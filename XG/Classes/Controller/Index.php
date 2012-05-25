@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Controller_IndexController extends XG_Classes_Controller_AbstractController
+class XG_Classes_Controller_Index extends XG_Classes_Controller_Abstract
 {
 	/**
 	 * @param array $request
@@ -25,7 +25,6 @@ class XG_Classes_Controller_IndexController extends XG_Classes_Controller_Abstra
 	public function __construct (array $request, XG_Classes_Domain_Service $service)
 	{
 		parent::__construct($request, $service);
-		$this->name = "Index";
 	}
 
 	/**
@@ -62,7 +61,7 @@ class XG_Classes_Controller_IndexController extends XG_Classes_Controller_Abstra
 
 		$view = new XG_Classes_View();
 		$view->assign('count', $count);
-		$content = $view->loadTemplate('index', $this->name);
+		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new XG_Classes_View();
 		$view->assign('title', '');

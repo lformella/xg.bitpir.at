@@ -33,7 +33,7 @@ class XG_Classes_Dispatcher
 	{
 		$show = isset($this->request['show']) && !empty($this->request['show']) ? $this->request['show'] : 'index';
 
-		/** @var $controller XG_Classes_Controller_AbstractController */
+		/** @var $controller XG_Classes_Controller_Abstract */
 		$controller = null;
 
 		$db = new PDO('mysql:host=localhost;dbname=xg', 'xg', 'xg');
@@ -42,16 +42,16 @@ class XG_Classes_Dispatcher
 		switch ($show)
 		{
 			case 'search':
-				$controller = new XG_Classes_Controller_SearchController($this->request, $service);
+				$controller = new XG_Classes_Controller_Search($this->request, $service);
 				break;
 
 			case 'network':
-				$controller = new XG_Classes_Controller_NetworkController($this->request, $service);
+				$controller = new XG_Classes_Controller_Network($this->request, $service);
 				break;
 
 			case 'index':
 			default:
-				$controller = new XG_Classes_Controller_IndexController($this->request, $service);
+				$controller = new XG_Classes_Controller_Index($this->request, $service);
 				break;
 		}
 

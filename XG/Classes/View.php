@@ -37,7 +37,12 @@ class XG_Classes_View
 	 */
 	public function loadTemplate ($template, $controller = '')
 	{
-		$file = dirname(__FILE__) . '/../Templates/' . ($controller != '' ? '/' . $controller : '') . '/' . $template . '.php';
+		if($controller != '')
+		{
+			$names = explode('_', $controller);
+			$controller = '/' . array_pop($names);
+		}
+		$file = __DIR__ . '/../Templates' . $controller . '/' . $template . '.php';
 
 		if (file_exists($file))
 		{

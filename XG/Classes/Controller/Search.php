@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Controller_SearchController extends XG_Classes_Controller_AbstractController
+class XG_Classes_Controller_Search extends XG_Classes_Controller_Abstract
 {
 	/**
 	 * @param array $request
@@ -25,7 +25,6 @@ class XG_Classes_Controller_SearchController extends XG_Classes_Controller_Abstr
 	public function __construct (array $request, XG_Classes_Domain_Service $service)
 	{
 		parent::__construct($request, $service);
-		$this->name = "Search";
 	}
 
 	/**
@@ -52,7 +51,7 @@ class XG_Classes_Controller_SearchController extends XG_Classes_Controller_Abstr
 	private function indexAction ()
 	{
 		$view = new XG_Classes_View();
-		$content = $view->loadTemplate('index', $this->name);
+		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new XG_Classes_View();
 		$view->assign('title', 'Search');
@@ -119,7 +118,7 @@ class XG_Classes_Controller_SearchController extends XG_Classes_Controller_Abstr
 		$json['rows'] = $json_objects;
 
 		$view->assign('json', $json);
-		$content = $view->loadTemplate('json', $this->name);
+		$content = $view->loadTemplate('json', __CLASS__);
 
 		return $content;
 	}

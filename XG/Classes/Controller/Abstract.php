@@ -16,12 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-abstract class XG_Classes_Controller_AbstractController
+abstract class XG_Classes_Controller_Abstract
 {
 	/** @var array */
 	protected $request = array();
-	/** @var string */
-	protected $name = '';
 	/** @var XG_Classes_Domain_Service */
 	protected $service = null;
 
