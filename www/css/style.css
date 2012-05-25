@@ -1,0 +1,182 @@
+/*
+//
+// Copyright (C) 2012 Lars Formella <ich@larsformella.de>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+*/
+
+body
+{
+	margin: 0;
+	padding: 0;
+	background: #fafafa;
+	color: #000;
+}
+
+img
+{
+	vertical-align: middle;
+	border: none;
+}
+
+a img
+{
+	border: none;
+}
+
+a
+{
+	color: #595959;
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
+}
+
+.active-page
+{
+	font-weight: bold;
+}
+
+*
+{
+	margin: 0;
+	padding: 0;
+	font: 12px "Lucida Grande", Verdana, Arial, "Bitstream Vera Sans", sans-serif;
+}
+
+small
+{
+	font-size: 9px;
+}
+
+.form-box, .menu-box
+{
+	padding: 8px;
+	font-weight: normal;
+	border-radius: 5px;
+	width: 1000px;
+	margin: 10px auto;
+}
+
+.menu-box
+{
+	padding-top: 90px;
+	background: url(../images/xg_header.png) 10px -50px;
+}
+
+.icon
+{
+	padding: 0 5px 0 10px;
+}
+
+.left
+{
+	float: left;
+}
+
+.form-field
+{
+	padding: 3px;
+	margin-top: 2px;
+	margin-right: 6px;
+	margin-bottom: 16px;
+	border: 1px solid #e5e5e5;
+	background: #fbfbfb;
+}
+
+label
+{
+	color: #444;
+	font-size: 13px;
+}
+
+input
+{
+	color: #555;
+}
+
+.clear
+{
+	clear: both;
+}
+
+.hidden
+{
+	display: none;
+}
+
+#network-slider ul, #network-slider li
+{
+	position: relative;
+	margin: 0 1px;
+	padding: 0;
+	list-style: none;
+	display: block;
+}
+
+#network-slider li
+{
+	overflow: hidden;
+}
+
+.breadCrumb
+{
+	margin: 0 0 10px 0;
+	display: block;
+	height: 26px;
+	padding: 1px 10px 1px 10px;
+}
+
+.breadCrumb ul
+{
+	margin: 0;
+	padding: 0;
+	height: 24px;
+	display: block;
+}
+
+.breadCrumb ul li
+{
+	display: block;
+	float: left;
+	position: relative;
+	line-height: 24px;
+	margin: 0 5px 0 0;
+	padding: 0 20px 0 0;
+	background: url(../images/breadcrumb_arrow.png) no-repeat 100% 5px;
+}
+
+#author-tag
+{
+	background: url("../images/tag_52g.png") no-repeat scroll left bottom transparent;
+	height: 65px;
+	left: 0;
+	position: absolute;
+	text-indent: -9999px;
+	top: 0;
+	width: 141px;
+	z-index: 10;
+}
+
+.footer
+{
+	border: 1px solid #DDDDDD;
+	margin: 10px 0 0 0;
+	display: block;
+	padding: 1px 10px 1px 10px;
+}
