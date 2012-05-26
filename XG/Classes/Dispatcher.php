@@ -21,6 +21,9 @@ class XG_Classes_Dispatcher
 	/** @var string[] */
 	private $request = array();
 
+	/**
+	 * @param array $request
+	 */
 	public function __construct (array $request)
 	{
 		$this->request = $request;

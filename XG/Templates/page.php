@@ -5,7 +5,7 @@
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-		<title>XG.BITPiR.AT - your XDCC Search Engine No.1 <?php echo $title != "" ? " - $title" : ""; ?></title>
+		<title>XG.BITPiR.AT<?php echo $title != "" ? " - $title" : ""; ?></title>
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?ver=1.1"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/flick/jquery-ui.css?ver=1.8.5"/>

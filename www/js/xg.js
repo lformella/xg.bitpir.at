@@ -15,9 +15,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-/* ************************************************************************** */
-/* GLOBAL VARS / FUNCTIONS                                                    */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* GLOBAL VARS / FUNCTIONS                                                                                            */
+/**********************************************************************************************************************/
 
 var id_server;
 var id_channel;
@@ -27,15 +27,15 @@ var id_search;
 var last_search;
 
 
-/* ************************************************************************** */
-/* GRID / FORM LOADER                                                         */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* GRID / FORM LOADER                                                                                                 */
+/**********************************************************************************************************************/
 
 $(function ()
 {
-	/* ********************************************************************** */
-	/* SERVER GRID                                                            */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* SERVER GRID                                                                                                    */
+	/******************************************************************************************************************/
 
 	jQuery("#servers").jqGrid(
 		{
@@ -80,9 +80,9 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#servers-pager', {edit:false, add:false, del:false, search:false});
 
-	/* ********************************************************************** */
-	/* CHANNEL GRID                                                           */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* CHANNEL GRID                                                                                                   */
+	/******************************************************************************************************************/
 
 	jQuery("#channels").jqGrid(
 		{
@@ -126,9 +126,9 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#channels-pager', {edit:false, add:false, del:false, search:false});
 
-	/* ********************************************************************** */
-	/* BOT GRID                                                               */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* BOT GRID                                                                                                       */
+	/******************************************************************************************************************/
 
 	jQuery("#bots").jqGrid(
 		{
@@ -143,13 +143,13 @@ $(function ()
 				{name:'Name', index:'Name', formatter:FormatBotName},
 				{name:'LastModified', index:'LastModified', hidden:true},
 				{name:'BotState', index:'BotState', hidden:true},
-				{name:'InfoQueueCurrent', index:'InfoQueueCurrent', width:100, formatter:FormatBotQueue, fixed:true, align:"right"},
+				{name:'InfoQueueCurrent', index:'InfoQueueCurrent', width:80, formatter:FormatBotQueue, fixed:true, align:"right"},
 				{name:'InfoQueueTotal', index:'InfoQueueTotal', hidden:true},
-				{name:'InfoSlotCurrent', index:'InfoSlotCurrent', width:100, formatter:FormatBotSlots, fixed:true, align:"right"},
+				{name:'InfoSlotCurrent', index:'InfoSlotCurrent', width:80, formatter:FormatBotSlots, fixed:true, align:"right"},
 				{name:'InfoSlotTotal', index:'InfoSlotTotal', hidden:true},
-				{name:'InfoSpeedCurrent', index:'InfoSpeedCurrent', width:100, formatter:FormatBotSpeed, fixed:true, align:"right"},
+				{name:'InfoSpeedCurrent', index:'InfoSpeedCurrent', width:120, formatter:FormatBotSpeed, fixed:true, align:"right"},
 				{name:'InfoSpeedMax', index:'InfoSpeedMax', hidden:true},
-				{name:'LastContact', index:'LastContact', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
+				{name:'Age', index:'LastContact', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
 				{name:'LastMessage', index:'LastMessage', hidden:true},
 				{name:'PacketCount', index:'PacketCount', width:60, fixed:true, align:"right"},
 				{name:'IrcLink', index:'IrcLink', hidden:true}
@@ -179,9 +179,9 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#bots-pager', {edit:false, add:false, del:false, search:false});
 
-	/* ********************************************************************** */
-	/* PACKET GRID                                                            */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* PACKET GRID                                                                                                    */
+	/******************************************************************************************************************/
 
 	jQuery("#packets").jqGrid(
 		{
@@ -196,8 +196,8 @@ $(function ()
 				{name:'Id', index:'Id', width:38, formatter:FormatPacketId, fixed:true, align:"right"},
 				{name:'Name', index:'Name', formatter:FormatPacketName},
 				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'LastUpdated', index:'LastUpdated', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
-				{name:'LastMentioned', index:'LastMentioned', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
+				{name:'LastUpdated', index:'LastUpdated', hidden:true},
+				{name:'Age', index:'LastMentioned', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
 				{name:'Size', index:'Size', width:80, formatter:FormatSize, fixed:true, align:"right"},
 				{name:'IrcLink', index:'IrcLink', hidden:true}
 			],
@@ -224,9 +224,9 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#packets-pager', {edit:false, add:false, del:false, search:true});
 
-	/* ********************************************************************** */
-	/* SEARCH GRID                                                            */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* SEARCH GRID                                                                                                    */
+	/******************************************************************************************************************/
 
 	jQuery("#search").jqGrid(
 		{
@@ -241,8 +241,8 @@ $(function ()
 				{name:'Id', index:'Id', width:38, formatter:FormatPacketId, fixed:true, align:"right"},
 				{name:'Name', index:'Name', formatter:FormatPacketNameWithBotName},
 				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'LastUpdated', index:'LastUpdated', width:140, formatter:FormatTimeStamp, fixed:true, align:"right"},
-				{name:'LastMentioned', index:'LastMentioned', width:140, formatter:FormatTimeStamp, fixed:true, align:"right"},
+				{name:'LastUpdated', index:'LastUpdated', hidden:true},
+				{name:'Age', index:'LastMentioned', width:140, formatter:FormatTimeStamp, fixed:true, align:"right"},
 				{name:'Size', index:'Size', width:80, formatter:FormatSize, fixed:true, align:"right"},
 				{name:'IrcLink', index:'IrcLink', hidden:true},
 				{name:'BotName', index:'BotName', hidden:true},
@@ -271,9 +271,9 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#search-pager', {edit:false, add:false, del:false, search:false});
 
-	/* ********************************************************************** */
-	/* OTHER STUFF                                                            */
-	/* ********************************************************************** */
+	/******************************************************************************************************************/
+	/* OTHER STUFF                                                                                                    */
+	/******************************************************************************************************************/
 
 	var networkSlider = $("#network-slider").sudoSlider({
 		controlsShow:false,
@@ -390,9 +390,9 @@ $(function ()
 		});
 });
 
-/* ************************************************************************** */
-/* DO SOMETHING                                                               */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* DO SOMETHING                                                                                                       */
+/**********************************************************************************************************************/
 
 function DoSearch(value)
 {
@@ -406,9 +406,9 @@ function DoSearch(value)
 	}
 }
 
-/* ************************************************************************** */
-/* SERVER FORMATER                                                            */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* SERVER FORMATER                                                                                                    */
+/**********************************************************************************************************************/
 
 function FormatServerIcon (cellvalue, options, rowObject)
 {
@@ -436,9 +436,9 @@ function FormatServerName (cellvalue, options, rowObject)
 	return str;
 }
 
-/* ************************************************************************** */
-/* CHANNEL FORMATER                                                           */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* CHANNEL FORMATER                                                                                                   */
+/**********************************************************************************************************************/
 
 function FormatChannelIcon (cellvalue, options, rowObject)
 {
@@ -470,19 +470,15 @@ function FormatChannelName (cellvalue, options, rowObject)
 	return str;
 }
 
-/* ************************************************************************** */
-/* BOT FORMATER                                                               */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* BOT FORMATER                                                                                                       */
+/**********************************************************************************************************************/
 
 function FormatBotIcon (cellvalue, options, rowObject)
 {
 	var str = "Bot";
 
-	if (rowObject[3] == 1)
-	{
-		str += "";
-	}
-	else
+	if (rowObject[3] != 1)
 	{
 		str += "_offline";
 	}
@@ -492,27 +488,11 @@ function FormatBotIcon (cellvalue, options, rowObject)
 
 function FormatBotName (cellvalue, options, rowObject)
 {
-	var str = rowObject[4];
-	return str;
-
-	if (rowObject[0] != undefined)
-	{
-		rowObject = Array2Bot(rowObject);
-	}
-
-	var ret = "";
-	ret += cellvalue;
-	if (/*rowObject.botstate != "Idle" &&*/ rowObject.lastmessage != "")
-	{
-		ret += "<br /><small><b>" + rowObject.lastcontact + ":</b> " + rowObject.lastmessage + "</small>";
-	}
-	return ret;
+	return rowObject[4];
 }
 
 function FormatBotSpeed (cellvalue, options, rowObject)
 {
-	//if(rowObject[0] != undefined) { rowObject = Array2Bot(rowObject); }
-
 	var ret = "";
 	if(rowObject[11] != "")
 	{
@@ -531,8 +511,6 @@ function FormatBotSpeed (cellvalue, options, rowObject)
 
 function FormatBotSlots (cellvalue, options, rowObject)
 {
-	//if(rowObject[0] != undefined) { rowObject = Array2Bot(rowObject); }
-
 	var ret = "";
 	ret += rowObject[9];
 	ret += " / ";
@@ -542,8 +520,6 @@ function FormatBotSlots (cellvalue, options, rowObject)
 
 function FormatBotQueue (cellvalue, options, rowObject)
 {
-	//if(rowObject[0] != undefined) { rowObject = Array2Bot(rowObject); }
-
 	var ret = "";
 	ret += rowObject[7];
 	ret += " / ";
@@ -551,30 +527,22 @@ function FormatBotQueue (cellvalue, options, rowObject)
 	return ret;
 }
 
-/* ************************************************************************** */
-/* PACKET FORMATER                                                            */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* PACKET FORMATER                                                                                                    */
+/**********************************************************************************************************************/
 
 function FormatPacketIcon (cellvalue, options, rowObject)
 {
-	var str = "Packet";
-
-	//if(rowObject[2] == 1) { str += ""; }
-	//else { str += "_disabled"; }
-
-	return "<a href='" + rowObject[10] + "'>" + FormatIcon(str) + "</a>";
+	return "<a href='" + rowObject[10] + "'>" + FormatIcon("Packet") + "</a>";
 }
 
 function FormatPacketId (cellvalue, options, rowObject)
 {
-	var str = "#" + cellvalue;
-	return str;
+	return "#" + cellvalue;
 }
 
 function FormatPacketName (cellvalue, options, rowObject)
 {
-//	if(rowObject[0] != undefined) { rowObject = Array2Packet(rowObject); }
-
 	var ext = cellvalue.toLowerCase().substr(-3);
 	var ret = "";
 	if (ext == "avi" || ext == "wmv" || ext == "mkv")
@@ -598,10 +566,6 @@ function FormatPacketName (cellvalue, options, rowObject)
 	{
 		ret += FormatIcon("language/de") + "&nbsp;&nbsp;";
 	}
-	/*else
-	 {
-	 ret += FormatIcon("LanguageNone") + "&nbsp;&nbsp;";
-	 }*/
 
 	ret += cellvalue;
 
@@ -626,9 +590,9 @@ function FormatPacketSpeed (cellvalue, options, rowObject)
 	return ret;
 }
 
-/* ************************************************************************** */
-/* GLOBAL FORMATER                                                            */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* GLOBAL FORMATER                                                                                                    */
+/**********************************************************************************************************************/
 
 function FormatIcon (img)
 {
@@ -640,30 +604,14 @@ function FormatSize (cellvalue, options, rowObject)
 	return Size2Human(cellvalue);
 }
 
-function FormatTime (cellvalue, options, rowObject)
-{
-	return Time2Human(cellvalue);
-}
-
 function FormatTimeStamp (cellvalue, options, rowObject)
 {
 	return TimeStampToHuman(cellvalue);
 }
 
-function FormatSpeed (cellvalue, options, rowObject)
-{
-	return Speed2Human(cellvalue);
-}
-
-function FormatInteger (cellvalue, options, rowObject)
-{
-	return cellvalue > 0 ? cellvalue : "";
-}
-
-
-/* ************************************************************************** */
-/* HELPER                                                                     */
-/* ************************************************************************** */
+/**********************************************************************************************************************/
+/* HELPER                                                                                                             */
+/**********************************************************************************************************************/
 
 function Size2Human (size)
 {
@@ -686,34 +634,6 @@ function Size2Human (size)
 	else
 	{
 		return (size / (1024 * 1024 * 1024)).toFixed(0) + " GB";
-	}
-}
-
-function Speed2Image (speed)
-{
-	if (speed < 1024 * 125)
-	{
-		return "DL0";
-	}
-	else if (speed < 1024 * 250)
-	{
-		return "DL1";
-	}
-	else if (speed < 1024 * 500)
-	{
-		return "DL2";
-	}
-	else if (speed < 1024 * 750)
-	{
-		return "DL3";
-	}
-	else if (speed < 1024 * 1000)
-	{
-		return "DL4";
-	}
-	else
-	{
-		return "DL5";
 	}
 }
 
@@ -744,19 +664,19 @@ function TimeStampToHuman (timestamp)
 	if (diff < 60)
 	{
 		diff = Math.floor(diff);
-		return diff + " second(s) ago";
+		return diff + " second" + (diff != 1 ? "s" : "") + " ago";
 	}
 	diff = diff / 60;
 	if (diff < 60)
 	{
 		diff = Math.floor(diff);
-		return diff + " minute(s) ago";
+		return diff + " minute" + (diff != 1 ? "s" : "") + " ago";
 	}
 	diff = diff / 60;
 	if (diff < 24)
 	{
 		diff = Math.floor(diff);
-		return diff + " hour(s) ago";
+		return diff + " hour" + (diff != 1 ? "s" : "") + " ago";
 	}
 
 	var hours = date.getHours();
