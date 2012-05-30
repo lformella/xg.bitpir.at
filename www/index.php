@@ -1,18 +1,20 @@
 <?php
 
-function autoLoad($className)
-{
-	$file = __DIR__ . '/../' . str_replace('_', '/', $className) . '.php';
-	if (file_exists($file))
+spl_autoload_register(
+	function ($className)
 	{
-		require_once($file);
-		return true;
+		$file = __DIR__ . '/../' . str_replace('\\', '/', $className) . '.php';
+		if (file_exists($file))
+		{
+			require_once($file);
+			return true;
+		}
+		return false;
 	}
-	return false;
-}
+);
 
-spl_autoload_register('autoLoad');
+use XG\Classes\Dispatcher;
 
 $request = array_merge($_GET, $_POST);
-$dispatcher = new XG_Classes_Dispatcher($request);
+$dispatcher = new Dispatcher($request);
 echo $dispatcher->display();

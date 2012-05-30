@@ -16,15 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Domain_Sorter
+namespace XG\Classes\Domain;
+
+use XG\Classes\Controller\Base;
+
+class Sorter
 {
 	private $variable;
 	private $reverse;
 
 	/**
-	 * @param  XG_Domain_Model_Object[] $array
-	 * @param  string                   $variable
-	 * @param  bool                     $reverse
+	 * @param  Base[] $array
+	 * @param  string $variable
+	 * @param  bool   $reverse
 	 *
 	 * @return void
 	 */
@@ -36,8 +40,8 @@ class XG_Classes_Domain_Sorter
 	}
 
 	/**
-	 * @param XG_Domain_Model_Object $obj1
-	 * @param XG_Domain_Model_Object $obj2
+	 * @param Base $obj1
+	 * @param Base $obj2
 	 *
 	 * @return int
 	 */

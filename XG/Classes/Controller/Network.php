@@ -16,13 +16,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Controller_Network extends XG_Classes_Controller_Abstract
+namespace XG\Classes\Controller;
+
+use XG\Classes\Domain\Service;
+use XG\Classes\Domain\Sorter;
+use XG\Classes\View;
+
+class Network extends Base
 {
 	/**
 	 * @param array $request
-	 * @param XG_Classes_Domain_Service $service
+	 * @param Service $service
 	 */
-	public function __construct (array $request, XG_Classes_Domain_Service $service)
+	public function __construct (array $request, Service $service)
 	{
 		parent::__construct($request, $service);
 	}
@@ -50,10 +56,10 @@ class XG_Classes_Controller_Network extends XG_Classes_Controller_Abstract
 	 */
 	private function indexAction ()
 	{
-		$view = new XG_Classes_View();
+		$view = new View();
 		$content = $view->loadTemplate('index', __CLASS__);
 
-		$view = new XG_Classes_View();
+		$view = new View();
 		$view->assign('title', 'Networks');
 		$view->assign('content', $content);
 		$content = $view->loadTemplate('page');
@@ -69,9 +75,9 @@ class XG_Classes_Controller_Network extends XG_Classes_Controller_Abstract
 		$start = ($this->request['page'] - 1) * $this->request['rows'];
 		$end = $start + $this->request['rows'];
 
-		$view = new XG_Classes_View();
+		$view = new View();
 
-		$sort = new XG_Classes_Domain_Sorter();
+		$sort = new Sorter();
 
 		$objects = array();
 		$json_objects = array();

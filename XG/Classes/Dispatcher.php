@@ -16,7 +16,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Dispatcher
+namespace XG\Classes;
+
+use PDO;
+use XG\Classes\Controller\Base;
+use XG\Classes\Controller\Index;
+use XG\Classes\Controller\Network;
+use XG\Classes\Controller\Search;
+use XG\Classes\Domain\Service;
+
+class Dispatcher
 {
 	/** @var string[] */
 	private $request = array();
@@ -36,25 +45,25 @@ class XG_Classes_Dispatcher
 	{
 		$show = isset($this->request['show']) && !empty($this->request['show']) ? $this->request['show'] : 'index';
 
-		/** @var $controller XG_Classes_Controller_Abstract */
+		/** @var $controller Base */
 		$controller = null;
 
 		$db = new PDO('mysql:host=localhost;dbname=xg', 'xg', 'xg');
-		$service = new XG_Classes_Domain_Service($db);
+		$service = new Service($db);
 
 		switch ($show)
 		{
 			case 'search':
-				$controller = new XG_Classes_Controller_Search($this->request, $service);
+				$controller = new Search($this->request, $service);
 				break;
 
 			case 'network':
-				$controller = new XG_Classes_Controller_Network($this->request, $service);
+				$controller = new  Network($this->request, $service);
 				break;
 
 			case 'index':
 			default:
-				$controller = new XG_Classes_Controller_Index($this->request, $service);
+				$controller = new  Index($this->request, $service);
 				break;
 		}
 

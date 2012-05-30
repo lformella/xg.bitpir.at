@@ -16,13 +16,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Controller_Index extends XG_Classes_Controller_Abstract
+namespace XG\Classes\Controller;
+
+use XG\Classes\Domain\Service;
+use XG\Classes\View;
+
+class Index extends Base
 {
 	/**
 	 * @param array $request
-	 * @param XG_Classes_Domain_Service $service
+	 * @param Service $service
 	 */
-	public function __construct (array $request, XG_Classes_Domain_Service $service)
+	public function __construct (array $request, Service $service)
 	{
 		parent::__construct($request, $service);
 	}
@@ -59,11 +64,11 @@ class XG_Classes_Controller_Index extends XG_Classes_Controller_Abstract
 			$count[4] += $server->PacketCount;
 		}
 
-		$view = new XG_Classes_View();
+		$view = new View();
 		$view->assign('count', $count);
 		$content = $view->loadTemplate('index', __CLASS__);
 
-		$view = new XG_Classes_View();
+		$view = new View();
 		$view->assign('title', '');
 		$view->assign('content', $content);
 		$content = $view->loadTemplate('page');

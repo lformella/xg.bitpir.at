@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_View
+namespace XG\Classes;
+
+class View
 {
 	/** @var mixed[] */
 	private $variables = array();
@@ -39,7 +41,7 @@ class XG_Classes_View
 	{
 		if($controller != '')
 		{
-			$names = explode('_', $controller);
+			$names = explode('\\', $controller);
 			$controller = '/' . array_pop($names);
 		}
 		$file = __DIR__ . '/../Templates' . $controller . '/' . $template . '.php';

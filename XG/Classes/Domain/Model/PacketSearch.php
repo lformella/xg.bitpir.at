@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Domain_Model_PacketSearch extends XG_Domain_Model_Packet
+namespace XG\Classes\Domain\Model;
+
+class PacketSearch extends Base
 {
 	/** @var string */
 	public $BotName;

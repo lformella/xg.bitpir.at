@@ -16,20 +16,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Domain_Model_Object
+namespace XG\Classes\Controller;
+
+use XG\Classes\Domain\Service;
+
+abstract class Base
 {
-	/** @var string */
-	public $Guid;
-	/** @var string */
-	public $ParentGuid;
-	/** @var int */
-	public $Enabled;
-	/** @var int */
-	public $Connected;
-	/** @var string */
-	public $Name;
-	/** @var int */
-	public $LastModified;
-	/** @var string */
-	public $IrcLink;
+	/** @var array */
+	protected $request = array();
+	/** @var Service */
+	protected $service = null;
+
+	/**
+	 * @param array $request
+	 * @param Service $service
+	 */
+	public function __construct (array $request, Service $service)
+	{
+		$this->request = $request;
+		$this->service = $service;
+	}
+
+	/**
+	 * @return string
+	 */
+	public abstract function display ();
 }

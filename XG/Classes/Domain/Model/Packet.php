@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Domain_Model_Packet extends XG_Domain_Model_Object
+namespace XG\Classes\Domain\Model;
+
+class Packet extends Base
 {
 	/** @var int */
 	public $LastUpdated;

@@ -16,7 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-class XG_Classes_Domain_Service
+namespace XG\Classes\Domain;
+
+use PDO;
+use XG\Classes\Domain\Model\Base;
+use XG\Classes\Domain\Model\Bot;
+use XG\Classes\Domain\Model\Channel;
+use XG\Classes\Domain\Model\Packet;
+use XG\Classes\Domain\Model\PacketSearch;
+use XG\Classes\Domain\Model\Server;
+
+class Service
 {
 	/** @var PDO */
 	protected $pdo;
@@ -32,7 +42,7 @@ class XG_Classes_Domain_Service
 	/**
 	 * @param  string $guid
 	 *
-	 * @return XG_Domain_Model_Object
+	 * @return Server
 	 */
 	public function GetServer ($guid)
 	{
@@ -42,7 +52,7 @@ class XG_Classes_Domain_Service
 			WHERE guid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_ServerObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Server');
 		$stmt->execute();
 		$result = $stmt->fetch(PDO::FETCH_CLASS);
 
@@ -50,7 +60,7 @@ class XG_Classes_Domain_Service
 	}
 
 	/**
-	 * @return XG_Domain_Model_Server[]
+	 * @return Server[]
 	 */
 	public function GetServers ()
 	{
@@ -58,7 +68,7 @@ class XG_Classes_Domain_Service
 			SELECT *, CONCAT('irc://', name, ':', port, '/') AS IrcLink
 			FROM server;
 		");
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_ServerObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Server');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
 
@@ -68,7 +78,7 @@ class XG_Classes_Domain_Service
 	/**
 	 * @param  string $guid
 	 *
-	 * @return XG_Domain_Model_Channel[]
+	 * @return Channel[]
 	 */
 	public function GetChannelsFromServer ($guid)
 	{
@@ -79,7 +89,7 @@ class XG_Classes_Domain_Service
 			WHERE c.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_ChannelObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Channel');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
 
@@ -89,7 +99,7 @@ class XG_Classes_Domain_Service
 	/**
 	 * @param  string $guid
 	 *
-	 * @return XG_Domain_Model_Bot[]
+	 * @return Bot[]
 	 */
 	public function GetBotsFromChannel ($guid)
 	{
@@ -101,7 +111,7 @@ class XG_Classes_Domain_Service
 			WHERE b.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_BotObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Bot');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
 
@@ -111,7 +121,7 @@ class XG_Classes_Domain_Service
 	/**
 	 * @param  string $guid
 	 *
-	 * @return XG_Domain_Model_Packet[]
+	 * @return Packet[]
 	 */
 	public function GetPacketsFromBot ($guid)
 	{
@@ -124,7 +134,7 @@ class XG_Classes_Domain_Service
 			WHERE p.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_PacketObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Packet');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
 
@@ -134,7 +144,7 @@ class XG_Classes_Domain_Service
 	/**
 	 * @param  string[] $strings
 	 *
-	 * @return XG_Domain_Model_PacketSearch[]
+	 * @return PacketSearch[]
 	 */
 	public function SearchPackets ($strings)
 	{
@@ -163,7 +173,7 @@ class XG_Classes_Domain_Service
 		{
 			$stmt->bindValue(':string' . $count++, '%' . $string . '%', PDO::PARAM_STR);
 		}
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'XG_Domain_Model_PacketSearchObject');
+		$stmt->setFetchMode(PDO::FETCH_CLASS, 'PacketSearch');
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
 
