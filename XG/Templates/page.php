@@ -22,6 +22,10 @@
 
 		<script src="js/jquery.delayedObserver.js" type="text/javascript"></script>
 
+		<script src="js/jquery.class.js" type="text/javascript"></script>
+
+		<script src="js/xg.helper.js" type="text/javascript"></script>
+		<script src="js/xg.formatter.js" type="text/javascript"></script>
 		<script src="js/xg.js" type="text/javascript"></script>
 
 	</head>

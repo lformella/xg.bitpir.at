@@ -26,6 +26,11 @@ var id_packet;
 var id_search;
 var last_search;
 
+var LANG_MONTH = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+var LANG_WEEKDAY = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+
+var Formatter;
+var Helper = new XGHelper();
 
 /**********************************************************************************************************************/
 /* GRID / FORM LOADER                                                                                                 */
@@ -33,6 +38,8 @@ var last_search;
 
 $(function ()
 {
+	Formatter = new MyFormatter();
+
 	/******************************************************************************************************************/
 	/* SERVER GRID                                                                                                    */
 	/******************************************************************************************************************/
@@ -41,19 +48,18 @@ $(function ()
 		{
 			url:"index.php?show=network&action=json&do=get_servers",
 			datatype:"json",
-			colNames:['', '', '', 'Name', 'LastModified', '', '', 'Channels', 'Bots', 'Packets', ''],
+			cmTemplate:{fixed:true},
+			colNames:['', 'Name', 'Channels', 'Bots', 'Packets', '', '', ''],
 			colModel:[
-				{name:'Guid', index:'Guid', hidden:true},
-				{name:'Enabled', index:'Enabled', hidden:true},
-				{name:'Connected', index:'Connected', width:26, formatter:FormatServerIcon, fixed:true},
-				{name:'Name', index:'Name', formatter:FormatServerName},
-				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'Port', index:'Port', hidden:true},
-				{name:'ErrorCode', index:'ErrorCode', hidden:true},
-				{name:'ChannelCount', index:'ChannelCount', width:60, fixed:true, align:"right"},
-				{name:'BotCount', index:'BotCount', width:60, fixed:true, align:"right"},
-				{name:'PacketCount', index:'PacketCount', width:60, fixed:true, align:"right"},
-				{name:'IrcLink', index:'IrcLink', hidden:true}
+				{name:'Connected',		index:'Connected',		formatter: function(c, o, r) { return Formatter.formatServerIcon(r); }, width:26},
+				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return Formatter.formatServerName(r); }, fixed:false},
+				{name:'ChannelCount',	index:'ChannelCount',	formatter: function(c, o, r) { return r.ChannelCount; }, width:60, align:"right"},
+				{name:'BotCount',		index:'BotCount',		formatter: function(c, o, r) { return r.BotCount; }, width:60, align:"right"},
+				{name:'PacketCount',	index:'PacketCount',	formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"},
+
+				{name:'Guid',			index:'Guid',			formatter: function(c, o, r) { return r.Guid; }, hidden: true},
+				{name:'ErrorCode',		index:'ErrorCode',		formatter: function(c, o, r) { return r.ErrorCode; }, hidden: true},
+				{name:'IrcLink',		index:'IrcLink',		formatter: function(c, o, r) { return r.IrcLink; }, hidden:true}
 			],
 			onSelectRow:function (id)
 			{
@@ -86,20 +92,18 @@ $(function ()
 
 	jQuery("#channels").jqGrid(
 		{
-			//url: "index.php?show=network&action=json&do=get_channels_from_server&guid=" + guid,
 			datatype:"json",
-			colNames:['', '', '', '', 'Name', 'LastModified', '', 'Bots', 'Packets', ''],
+			cmTemplate:{fixed:true},
+			colNames:['', 'Name', 'Bots', 'Packets', '', '', ''],
 			colModel:[
-				{name:'ParentGuid', index:'ParentGuid', hidden:true},
-				{name:'Guid', index:'Guid', hidden:true},
-				{name:'Enabled', index:'Enabled', hidden:true},
-				{name:'Connected', index:'Connected', width:26, formatter:FormatChannelIcon, fixed:true},
-				{name:'Name', index:'Name', formatter:FormatChannelName},
-				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'ErrorCode', index:'ErrorCode', hidden:true},
-				{name:'BotCount', index:'BotCount', width:60, fixed:true, align:"right"},
-				{name:'PacketCount', index:'PacketCount', width:60, fixed:true, align:"right"},
-				{name:'IrcLink', index:'IrcLink', hidden:true}
+				{name:'Connected',		index:'Connected',		formatter: function(c, o, r) { return Formatter.formatChannelIcon(r); }, width:26 },
+				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return Formatter.formatChannelName(r); }, fixed:false},
+				{name:'BotCount',		index:'BotCount',		formatter: function(c, o, r) { return r.BotCount; }, width:60, align:"right"},
+				{name:'PacketCount',	index:'PacketCount',	formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"},
+
+				{name:'Guid',			index:'Guid',			formatter: function(c, o, r) { return r.Guid; }, hidden:true},
+				{name:'ErrorCode',		index:'ErrorCode',		formatter: function(c, o, r) { return r.ErrorCode; }, hidden:true},
+				{name:'IrcLink',		index:'IrcLink',		formatter: function(c, o, r) { return r.IrcLink; }, hidden:true}
 			],
 			onSelectRow:function (id)
 			{
@@ -134,25 +138,23 @@ $(function ()
 		{
 			//url: "index.php?show=network&action=json&do=get_bots_from_channel&guid=" + guid,
 			datatype:"json",
-			colNames:['', '', '', '', 'Name', 'LastModified', '', 'Queue', '', 'Slots', '', 'Speed', '', 'LastContact', 'LastMessage', 'Packets', ''],
+			cmTemplate:{fixed:true},
+			colNames:['', 'Name', 'Queue', 'Slots', 'Speed', 'Last Contact', 'Packets', '', '', '', '', '', ''],
 			colModel:[
-				{name:'ParentGuid', index:'ParentGuid', hidden:true},
-				{name:'Guid', index:'Guid', hidden:true},
-				{name:'Enabled', index:'Enabled', hidden:true},
-				{name:'Connected', index:'Connected', width:26, formatter:FormatBotIcon, fixed:true},
-				{name:'Name', index:'Name', formatter:FormatBotName},
-				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'BotState', index:'BotState', hidden:true},
-				{name:'InfoQueueCurrent', index:'InfoQueueCurrent', width:80, formatter:FormatBotQueue, fixed:true, align:"right"},
-				{name:'InfoQueueTotal', index:'InfoQueueTotal', hidden:true},
-				{name:'InfoSlotCurrent', index:'InfoSlotCurrent', width:80, formatter:FormatBotSlots, fixed:true, align:"right"},
-				{name:'InfoSlotTotal', index:'InfoSlotTotal', hidden:true},
-				{name:'InfoSpeedCurrent', index:'InfoSpeedCurrent', width:120, formatter:FormatBotSpeed, fixed:true, align:"right"},
-				{name:'InfoSpeedMax', index:'InfoSpeedMax', hidden:true},
-				{name:'Age', index:'LastContact', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
-				{name:'LastMessage', index:'LastMessage', hidden:true},
-				{name:'PacketCount', index:'PacketCount', width:60, fixed:true, align:"right"},
-				{name:'IrcLink', index:'IrcLink', hidden:true}
+				{name:'Connected',			index:'Connected',			formatter: function(c, o, r) { return Formatter.formatBotIcon(r); }, width:26 },
+				{name:'Name',				index:'Name',				formatter: function(c, o, r) { return Formatter.formatBotName(r); }, fixed:false},
+				{name:'InfoQueueCurrent',	index:'InfoQueueCurrent',	formatter: function(c, o, r) { return Formatter.formatBotQueue(r); }, width:80, align:"right"},
+				{name:'InfoSlotCurrent',	index:'InfoSlotCurrent',	formatter: function(c, o, r) { return Formatter.formatBotSlots(r); }, width:80, align:"right"},
+				{name:'InfoSpeedCurrent',	index:'InfoSpeedCurrent',	formatter: function(c, o, r) { return Formatter.formatBotSpeed(r); }, width:120, align:"right"},
+				{name:'LastContact',		index:'LastContact',		formatter: function(c, o, r) { return Helper.timeStampToHuman(r.LastContact); }, width:150, align:"right"},
+				{name:'PacketCount',		index:'PacketCount',		formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"},
+
+				{name:'InfoSpeedMax',		index:'InfoSpeedMax',		formatter: function(c, o, r) { return r.InfoSpeedMax; }, hidden:true},
+				{name:'InfoSlotTotal',		index:'InfoSlotTotal',		formatter: function(c, o, r) { return r.InfoSlotTotal; }, hidden:true},
+				{name:'InfoQueueTotal',		index:'InfoQueueTotal',		formatter: function(c, o, r) { return r.InfoQueueTotal; }, hidden:true},
+				{name:'BotState',			index:'BotState',			formatter: function(c, o, r) { return r.BotState; }, hidden:true},
+				{name:'Guid',				index:'Guid',				formatter: function(c, o, r) { return r.Guid; }, hidden:true},
+				{name:'IrcLink',			index:'IrcLink',			formatter: function(c, o, r) { return r.IrcLink; }, hidden:true}
 			],
 			onSelectRow:function (id)
 			{
@@ -185,21 +187,18 @@ $(function ()
 
 	jQuery("#packets").jqGrid(
 		{
-			//url: "index.php?show=network&action=json&do=get_packets_from_bot&guid=" + guid,
 			datatype:"json",
-			colNames:['', '', '', '', 'Id', 'Name', 'LastModified', 'LastUpdated', 'LastMentioned', 'Size', ''],
+			cmTemplate:{fixed:true},
+			colNames:['', 'Id', 'Name', 'Last Mentioned', 'Size', '', ''],
 			colModel:[
-				{name:'ParentGuid', index:'ParentGuid', hidden:true},
-				{name:'Guid', index:'Guid', hidden:true},
-				{name:'Enabled', index:'Enabled', hidden:true},
-				{name:'Connected', index:'Connected', width:26, formatter:FormatPacketIcon, fixed:true},
-				{name:'Id', index:'Id', width:38, formatter:FormatPacketId, fixed:true, align:"right"},
-				{name:'Name', index:'Name', formatter:FormatPacketName},
-				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'LastUpdated', index:'LastUpdated', hidden:true},
-				{name:'Age', index:'LastMentioned', width:150, formatter:FormatTimeStamp, fixed:true, align:"right"},
-				{name:'Size', index:'Size', width:80, formatter:FormatSize, fixed:true, align:"right"},
-				{name:'IrcLink', index:'IrcLink', hidden:true}
+				{name:'Connected',		index:'Connected',		formatter: function(c, o, r) { return Formatter.formatPacketIcon(r); }, width:26},
+				{name:'Id',				index:'Id',				formatter: function(c, o, r) { return Formatter.formatPacketId(r); }, width:38, align:"right"},
+				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return Formatter.formatPacketName(r); }, fixed:false},
+				{name:'LastMentioned',	index:'LastMentioned',	formatter: function(c, o, r) { return Helper.timeStampToHuman(r.LastMentioned); }, width:150, align:"right"},
+				{name:'Size',			index:'Size',			formatter: function(c, o, r) { return Helper.size2Human(r.Size); }, width:80, align:"right"},
+
+				{name:'Guid',			index:'Guid',			formatter: function(c, o, r) { return r.Guid; }, hidden:true},
+				{name:'IrcLink',		index:'IrcLink',		formatter: function(c, o, r) { return r.IrcLink; }, hidden:true}
 			],
 			onSelectRow:function (id)
 			{
@@ -230,23 +229,19 @@ $(function ()
 
 	jQuery("#search").jqGrid(
 		{
-			//url: "index.php?show=network&action=json&do=get_packets_from_bot&guid=" + guid,
 			datatype:"json",
-			colNames:['', '', '', '', 'Id', 'Name', 'LastModified', 'LastUpdated', 'LastMentioned', 'Size', '', '', 'Speed'],
+			cmTemplate:{fixed:true},
+			colNames:['', 'Id', 'Name', 'Last Mentioned', 'Size', 'Bot', 'Speed', ''],
 			colModel:[
-				{name:'ParentGuid', index:'ParentGuid', hidden:true},
-				{name:'Guid', index:'Guid', hidden:true},
-				{name:'Enabled', index:'Enabled', hidden:true},
-				{name:'Connected', index:'Connected', width:26, formatter:FormatPacketIcon, fixed:true},
-				{name:'Id', index:'Id', width:38, formatter:FormatPacketId, fixed:true, align:"right"},
-				{name:'Name', index:'Name', formatter:FormatPacketNameWithBotName},
-				{name:'LastModified', index:'LastModified', hidden:true},
-				{name:'LastUpdated', index:'LastUpdated', hidden:true},
-				{name:'Age', index:'LastMentioned', width:140, formatter:FormatTimeStamp, fixed:true, align:"right"},
-				{name:'Size', index:'Size', width:80, formatter:FormatSize, fixed:true, align:"right"},
-				{name:'IrcLink', index:'IrcLink', hidden:true},
-				{name:'BotName', index:'BotName', hidden:true},
-				{name:'BotSpeed', index:'BotSpeed', width:100, formatter:FormatPacketSpeed, fixed:true, align:"right"}
+				{name:'Connected',		index:'Connected',		formatter: function(c, o, r) { return Formatter.formatPacketIcon(r); }, width:26},
+				{name:'Id',				index:'Id',				formatter: function(c, o, r) { return Formatter.formatPacketId(r); }, width:38, align:"right"},
+				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return Formatter.formatPacketName(r); }, fixed:false},
+				{name:'LastMentioned',	index:'LastMentioned',	formatter: function(c, o, r) { return Helper.timeStampToHuman(r.LastMentioned); }, width:140, align:"right"},
+				{name:'Size',			index:'Size',			formatter: function(c, o, r) { return Helper.size2Human(r.Size); }, width:60, align:"right"},
+				{name:'BotName',		index:'BotName',		formatter: function(c, o, r) { return Formatter.formatPacketBotName(r.BotName); }, width:80},
+				{name:'BotSpeed',		index:'BotSpeed',		formatter: function(c, o, r) { return Helper.speed2Human(r.BotSpeed); }, width:80, align:"right"},
+
+				{name:'IrcLink',		index:'IrcLink',		formatter: function(c, o, r) { return r.IrcLink; }, hidden:true}
 			],
 			onSelectRow:function (id)
 			{
@@ -290,7 +285,6 @@ $(function ()
 					jQuery("#bread-server").fadeOut();
 					jQuery("#bread-channel").fadeOut();
 					jQuery("#bread-bot").fadeOut();
-					trackPiwik(document.location, document.title);
 					break;
 
 				case 2:
@@ -384,7 +378,7 @@ $(function ()
 	});
 
 	$('#search-input').delayedObserver(0.8,
-		function (value, object)
+		function (value)
 		{
 			DoSearch(value);
 		});
@@ -394,396 +388,169 @@ $(function ()
 /* DO SOMETHING                                                                                                       */
 /**********************************************************************************************************************/
 
-function DoSearch(value)
+function DoSearch (value)
 {
-	if(last_search != value)
+	if (last_search != value)
 	{
 		last_search = value;
 		jQuery("#search").clearGridData();
-		jQuery("#search").setGridParam({url:"index.php?show=network&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
+		jQuery("#search").setGridParam({url:"index.php?show=search&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
 
 		trackPiwik(document.location, document.title + " " + value);
 	}
 }
 
 /**********************************************************************************************************************/
-/* SERVER FORMATER                                                                                                    */
+/* CUSTOM FORMATER                                                                                                    */
 /**********************************************************************************************************************/
 
-function FormatServerIcon (cellvalue, options, rowObject)
+var MyFormatter = Class.create(XGFormatter,
 {
-	var str = "Server";
+	/**********************************************************************************************************************/
+	/* SERVER FORMATER                                                                                                    */
+	/**********************************************************************************************************************/
 
-	if (rowObject[2] == 1)
+	formatIcon: function (img)
 	{
-		str += "";
-	}
-	else
+		return "<img src='images/" + img + ".png' />";
+	},
+
+	formatIcon2: function (img)
 	{
-		str += "_disabled";
-	}
+		return this.formatIcon(img);
+	},
 
-	return "<a href='" + rowObject[10] + "'>" + FormatIcon(str) + "</a>";// + " " + rowObject[3];
-}
-
-function FormatServerName (cellvalue, options, rowObject)
-{
-	var str = rowObject[3] + ":" + rowObject[5];
-	if (rowObject[6] != "" && rowObject[6] != null && rowObject[6] != 0)
+	formatServerIcon: function (server)
 	{
-		str += " - <small>" + rowObject[6] + "</small>";
-	}
-	return str;
-}
+		var str = "Server";
 
-/**********************************************************************************************************************/
-/* CHANNEL FORMATER                                                                                                   */
-/**********************************************************************************************************************/
+		if (server.Connected == 1)
+		{
+			str += "";
+		}
+		else
+		{
+			str += "_disabled";
+		}
 
-function FormatChannelIcon (cellvalue, options, rowObject)
-{
-	var str = "Channel";
+		return "<a href='" + server.IrcLink + "'>" + this.formatIcon(str) + "</a>";
+	},
 
-	if (rowObject[3] == 1)
+	formatServerName: function (server)
 	{
-		str += "";
-	}
-	else if (rowObject[6] > 0)
+		var str = server.Name;
+		if (server.ErrorCode != "" && server.ErrorCode != null && server.ErrorCode != 0)
+		{
+			str += " - <small>" + server.ErrorCode + "</small>";
+		}
+		return str;
+	},
+
+	/**********************************************************************************************************************/
+	/* CHANNEL FORMATER                                                                                                   */
+	/**********************************************************************************************************************/
+
+	formatChannelIcon: function (channel)
 	{
-		str += "_error";
-	}
-	else
+		var str = "Channel";
+
+		if(channel.Connected) { str += ""; }
+		else if(channel.ErrorCode > 0) { str += "_error"; }
+		else { str += "_disabled"; }
+
+		return "<a href='" + channel.IrcLink + "'>" + this.formatIcon2(str) + "</a>";
+	},
+
+	formatChannelName: function (channel)
 	{
-		str += "_disabled";
-	}
+		var str = channel.Name;
+		if (channel.ErrorCode != "" && channel.ErrorCode != null && channel.ErrorCode != 0)
+		{
+			str += " - <small>" + channel.ErrorCode + "</small>";
+		}
+		return str;
+	},
 
-	return "<a href='" + rowObject[9] + "'>" + FormatIcon(str) + "</a>";// + " " + rowObject[3];
-}
+	/**********************************************************************************************************************/
+	/* BOT FORMATER                                                                                                       */
+	/**********************************************************************************************************************/
 
-function FormatChannelName (cellvalue, options, rowObject)
-{
-	var str = rowObject[4];
-	if (rowObject[6] != "" && rowObject[6] != null && rowObject[6] != 0)
+	formatBotIcon: function (bot)
 	{
-		str += " - <small>" + rowObject[6] + "</small>";
-	}
-	return str;
-}
+		var str = "Bot";
 
-/**********************************************************************************************************************/
-/* BOT FORMATER                                                                                                       */
-/**********************************************************************************************************************/
+		if (bot.Connected != 1)
+		{
+			str += "_offline";
+		}
 
-function FormatBotIcon (cellvalue, options, rowObject)
-{
-	var str = "Bot";
+		return "<a href='" + bot.IrcLink + "'>" + this.formatIcon(str) + "</a>";
+	},
 
-	if (rowObject[3] != 1)
+	/**
+	 * @param {XGBot} bot
+	 * @return {String}
+	 */
+	formatBotName: function (bot)
 	{
-		str += "_offline";
-	}
+		return bot.Name;
+	},
 
-	return "<a href='" + rowObject[16] + "'>" + FormatIcon(str) + "</a>";
-}
+	/**********************************************************************************************************************/
+	/* PACKET FORMATER                                                                                                    */
+	/**********************************************************************************************************************/
 
-function FormatBotName (cellvalue, options, rowObject)
-{
-	return rowObject[4];
-}
-
-function FormatBotSpeed (cellvalue, options, rowObject)
-{
-	var ret = "";
-	if(rowObject[11] != "")
+	formatPacketIcon: function (packet)
 	{
-		ret += Speed2Human(rowObject[11]);
-	}
-	if(rowObject[11] != "" && rowObject[12] != "")
+		return "<a href='" + packet.IrcLink + "'>" + this.formatIcon("Packet") + "</a>";
+	},
+
+	formatPacketName: function (packet)
 	{
-		ret += " / ";
-	}
-	if(rowObject[12] != "")
+		var ext = packet.Name.toLowerCase().substr(-3);
+		var ret = "";
+		if(ext == "avi" || ext == "wmv" || ext == "mkv")
+		{
+			ret += this.formatIcon("extension/video") + "&nbsp;&nbsp;";
+		}
+		else if(ext == "mp3")
+		{
+			ret += this.formatIcon("extension/audio") + "&nbsp;&nbsp;";
+		}
+		else if(ext == "rar" || ext == "tar" || ext == "zip")
+		{
+			ret += this.formatIcon("extension/compressed") + "&nbsp;&nbsp;";
+		}
+		else
+		{
+			ret += this.formatIcon("extension/default") + "&nbsp;&nbsp;";
+		}
+
+		if(packet.Name.toLowerCase().indexOf("german") > -1)
+		{
+			ret += this.formatIcon("language/de") + "&nbsp;&nbsp;";
+		}
+
+		ret += packet.Name;
+
+		return ret;
+	},
+
+	formatPacketBotName: function (botName)
 	{
-		ret += Speed2Human(rowObject[12]);
+		var ret = '<small>' + botName + '</small>';
+
+		return ret;
 	}
-	return ret;
-}
-
-function FormatBotSlots (cellvalue, options, rowObject)
-{
-	var ret = "";
-	ret += rowObject[9];
-	ret += " / ";
-	ret += rowObject[10];
-	return ret;
-}
-
-function FormatBotQueue (cellvalue, options, rowObject)
-{
-	var ret = "";
-	ret += rowObject[7];
-	ret += " / ";
-	ret += rowObject[8];
-	return ret;
-}
-
-/**********************************************************************************************************************/
-/* PACKET FORMATER                                                                                                    */
-/**********************************************************************************************************************/
-
-function FormatPacketIcon (cellvalue, options, rowObject)
-{
-	return "<a href='" + rowObject[10] + "'>" + FormatIcon("Packet") + "</a>";
-}
-
-function FormatPacketId (cellvalue, options, rowObject)
-{
-	return "#" + cellvalue;
-}
-
-function FormatPacketName (cellvalue, options, rowObject)
-{
-	var ext = cellvalue.toLowerCase().substr(-3);
-	var ret = "";
-	if (ext == "avi" || ext == "wmv" || ext == "mkv")
-	{
-		ret += FormatIcon("extension/video") + "&nbsp;&nbsp;";
-	}
-	else if (ext == "mp3")
-	{
-		ret += FormatIcon("extension/audio") + "&nbsp;&nbsp;";
-	}
-	else if (ext == "rar" || ext == "tar" || ext == "zip")
-	{
-		ret += FormatIcon("extension/compressed") + "&nbsp;&nbsp;";
-	}
-	else
-	{
-		ret += FormatIcon("extension/default") + "&nbsp;&nbsp;";
-	}
-
-	if (cellvalue.toLowerCase().indexOf("german") > -1)
-	{
-		ret += FormatIcon("language/de") + "&nbsp;&nbsp;";
-	}
-
-	ret += cellvalue;
-
-	return ret;
-}
-
-function FormatPacketNameWithBotName (cellvalue, options, rowObject)
-{
-	var ret = FormatPacketName(cellvalue, options, rowObject);
-	ret += '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>via Bot ' + rowObject[11] + '</small>';
-
-	return ret;
-}
-
-function FormatPacketSpeed (cellvalue, options, rowObject)
-{
-	var ret = "";
-	if(cellvalue != "")
-	{
-		ret += Speed2Human(cellvalue);
-	}
-	return ret;
-}
-
-/**********************************************************************************************************************/
-/* GLOBAL FORMATER                                                                                                    */
-/**********************************************************************************************************************/
-
-function FormatIcon (img)
-{
-	return "<img src='images/" + img + ".png' />";
-}
-
-function FormatSize (cellvalue, options, rowObject)
-{
-	return Size2Human(cellvalue);
-}
-
-function FormatTimeStamp (cellvalue, options, rowObject)
-{
-	return TimeStampToHuman(cellvalue);
-}
+});
 
 /**********************************************************************************************************************/
 /* HELPER                                                                                                             */
 /**********************************************************************************************************************/
 
-function Size2Human (size)
+function trackPiwik (url, title)
 {
-	if (size == 0)
-	{
-		return "";
-	}
-	if (size < 1024)
-	{
-		return size + " B";
-	}
-	else if (size < 1024 * 1024)
-	{
-		return (size / 1024).toFixed(0) + " KB";
-	}
-	else if (size < 1024 * 1024 * 1024)
-	{
-		return (size / (1024 * 1024)).toFixed(0) + " MB";
-	}
-	else
-	{
-		return (size / (1024 * 1024 * 1024)).toFixed(0) + " GB";
-	}
-}
-
-function TimeStampToDate (timestamp)
-{
-	var date = new Date(timestamp * 1000);
-	date.setHours(date.getHours() - 2);
-	return date;
-}
-
-var LANG_MONTH = new Array("Januar", "Februar", "M&auml;rz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember");
-var LANG_WEEKDAY = new Array("Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag");
-
-function TimeStampToHuman (timestamp)
-{
-	if (timestamp <= 0)
-	{
-		return "";
-	}
-
-	var date = TimeStampToDate(timestamp);
-	var diff = (((new Date()).getTime() - date.getTime()) / 1000);
-
-	if (diff < 0)
-	{
-		return "now";
-	}
-	if (diff < 60)
-	{
-		diff = Math.floor(diff);
-		return diff + " second" + (diff != 1 ? "s" : "") + " ago";
-	}
-	diff = diff / 60;
-	if (diff < 60)
-	{
-		diff = Math.floor(diff);
-		return diff + " minute" + (diff != 1 ? "s" : "") + " ago";
-	}
-	diff = diff / 60;
-	if (diff < 24)
-	{
-		diff = Math.floor(diff);
-		return diff + " hour" + (diff != 1 ? "s" : "") + " ago";
-	}
-
-	var hours = date.getHours();
-	if (hours < 10)
-	{
-		hours = "0" + hours;
-	}
-	var minutes = date.getMinutes();
-	if (minutes < 10)
-	{
-		minutes = "0" + minutes;
-	}
-
-	diff = diff / 24;
-	if (diff < 2)
-	{
-		return "yesterday at " + hours + ":" + minutes + "";
-	}
-	if (diff < 7)
-	{
-		return LANG_WEEKDAY[date.getDay()] + " at " + hours + ":" + minutes + "";
-	}
-
-	return date.getDate() + ". " + LANG_MONTH[date.getMonth()] + " at " + hours + ":" + minutes + "";
-}
-
-function Speed2Human (speed)
-{
-	if (speed == 0)
-	{
-		return "";
-	}
-	if (speed < 1024)
-	{
-		return speed + " B";
-	}
-	else if (speed < 1024 * 1024)
-	{
-		return (speed / 1024).toFixed(2) + " KB";
-	}
-	else
-	{
-		return (speed / (1024 * 1024)).toFixed(2) + " MB";
-	}
-}
-
-function Time2Human (time)
-{
-	var str = "";
-	if (time < 0 || time >= 106751991167300 || time == "106751991167300")
-	{
-		return str;
-	}
-
-	var buff = 0;
-
-	if (time > 86400)
-	{
-		buff = Math.floor(time / 86400);
-		str += (buff >= 10 ? "" + buff : "0" + buff) + ":";
-
-		time -= buff * 86400;
-	}
-	else if (str != "")
-	{
-		str += "00:";
-	}
-
-	if (time > 3600)
-	{
-		buff = Math.floor(time / 3600);
-		str += (buff >= 10 ? "" + buff : "0" + buff) + ":";
-		time -= buff * 3600;
-	}
-	else if (str != "")
-	{
-		str += "00:";
-	}
-
-	if (time > 60)
-	{
-		buff = Math.floor(time / 60);
-		str += (buff >= 10 ? "" + buff : "0" + buff) + ":";
-		time -= buff * 60;
-	}
-	else if (str != "")
-	{
-		str += "00:";
-	}
-
-	if (time > 0)
-	{
-		buff = time;
-		str += (buff >= 10 ? "" + buff : "0" + buff);
-		time -= buff;
-	}
-	else if (str != "")
-	{
-		str += "00";
-	}
-
-	return str;
-}
-
-function trackPiwik(url, title)
-{
-	if(title == undefined)
+	if (title == undefined)
 	{
 		title = document.title;
 	}
@@ -794,7 +561,7 @@ function trackPiwik(url, title)
 		piwikTracker.trackPageView();
 		piwikTracker.enableLinkTracking();
 	}
-	catch(err)
+	catch (err)
 	{
 	}
 }
