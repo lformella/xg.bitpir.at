@@ -18,7 +18,7 @@
 
 namespace XG\Classes\Domain\Model;
 
-class PacketSearch extends Base
+class PacketSearch extends Packet
 {
 	/** @var string */
 	public $BotName;

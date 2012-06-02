@@ -72,57 +72,17 @@ class Search extends Base
 	 */
 	private function jsonAction ()
 	{
-		$start = ($this->request['page'] - 1) * $this->request['rows'];
-		$end = $start + $this->request['rows'];
-
-		$view = new View();
-
-		$sort = new Sorter();
-
 		$objects = array();
-		$json_objects = array();
 
 		if (strlen($this->request['searchString']) >= 3)
 		{
 			$strings = explode(" ", $this->request['searchString']);
 			$objects = $this->service->SearchPackets($strings);
-
-			$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-			$i = 0;
-			foreach ($objects as $object)
-			{
-				if ($i >= $start && $i < $end)
-				{
-					$arr = array();
-					$arr['id'] = $object->Guid;
-					$arr['cell'] = array(
-						$object->ParentGuid,
-						$object->Guid,
-						(int)$object->Enabled,
-						(int)$object->Connected,
-						(int)$object->Id,
-						$object->Name,
-						(int)$object->LastModified,
-						(int)$object->LastUpdated,
-						(int)$object->LastMentioned,
-						(int)$object->Size,
-						$object->IrcLink,
-						$object->BotName,
-						$object->BotSpeed
-					);
-					$json_objects[] = $arr;
-				}
-				$i++;
-			}
 		}
 
-		$objectsCount = sizeof($objects);
-		$json = array();
-		$json['page'] = $this->request['page'];
-		$json['total'] = ceil($objectsCount / $this->request['rows']);
-		$json['records'] = $objectsCount;
-		$json['rows'] = $json_objects;
+		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
 
+		$view = new View();
 		$view->assign('json', $json);
 		$content = $view->loadTemplate('json', __CLASS__);
 

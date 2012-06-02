@@ -33,30 +33,12 @@ class Service
 
 	/**
 	 * @param PDO $pdo
+	 *
+	 * @return Service
 	 */
 	public function __construct (PDO $pdo)
 	{
 		$this->pdo = $pdo;
-	}
-
-	/**
-	 * @param  string $guid
-	 *
-	 * @return Server
-	 */
-	public function GetServer ($guid)
-	{
-		$stmt = $this->pdo->prepare("
-			SELECT *, CONCAT('irc://', name, ':', port, '/') AS IrcLink
-			FROM server
-			WHERE guid = :guid;
-		");
-		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Server');
-		$stmt->execute();
-		$result = $stmt->fetch(PDO::FETCH_CLASS);
-
-		return !$result ? null : $result;
 	}
 
 	/**
@@ -68,9 +50,8 @@ class Service
 			SELECT *, CONCAT('irc://', name, ':', port, '/') AS IrcLink
 			FROM server;
 		");
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Server');
 		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Server');
 
 		return !$result ? array() : $result;
 	}
@@ -89,9 +70,8 @@ class Service
 			WHERE c.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Channel');
 		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Channel');
 
 		return !$result ? array() : $result;
 	}
@@ -111,9 +91,8 @@ class Service
 			WHERE b.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Bot');
 		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Bot');
 
 		return !$result ? array() : $result;
 	}
@@ -134,9 +113,8 @@ class Service
 			WHERE p.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'Packet');
 		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Packet');
 
 		return !$result ? array() : $result;
 	}
@@ -173,10 +151,70 @@ class Service
 		{
 			$stmt->bindValue(':string' . $count++, '%' . $string . '%', PDO::PARAM_STR);
 		}
-		$stmt->setFetchMode(PDO::FETCH_CLASS, 'PacketSearch');
 		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS);
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\PacketSearch');
 
 		return !$result ? array() : $result;
+	}
+
+	/**
+	 * @param Base[] $objects
+	 * @param int $sidx
+	 * @param string $sord
+	 * @param int $page
+	 * @param int $rows
+	 * @return array
+	 */
+	public function buildJsonArray(array $objects, $sidx, $sord, $page, $rows)
+	{
+		$start = ($page - 1) * $rows;
+		$end = $start + $rows;
+
+		$json_objects = array();
+		if(count($objects) > 0)
+		{
+			$sort = new Sorter();
+			$sort->Sort($objects, $sidx, $sord == "desc");
+
+			$i = 0;
+			foreach ($objects as $object)
+			{
+				if ($i >= $start && $i < $end)
+				{
+					$arr = array();
+					$arr['id'] = $object->Guid;
+					$arr['cell'] = $this->object2Array($object);
+					$json_objects[] = $arr;
+				}
+				$i++;
+			}
+		}
+
+		$objectsCount = sizeof($objects);
+		$json = array();
+		$json['page'] = $page;
+		$json['total'] = ceil($objectsCount / $rows);
+		$json['records'] = $objectsCount;
+		$json['rows'] = $json_objects;
+
+		return $json;
+	}
+
+	/**
+	 * @param Base $object
+	 * @return array
+	 */
+	private function object2Array($object)
+	{
+		$return = array();
+		$reflect = new \ReflectionClass($object);
+		$props = $reflect->getProperties();
+		foreach ($props as $prop)
+		{
+			$name = $prop->getName();
+			$value = $object->$name;
+			$return[$name] = !is_null($value) ? $value : "";
+		}
+		return $return;
 	}
 }

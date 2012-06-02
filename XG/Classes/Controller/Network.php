@@ -72,183 +72,30 @@ class Network extends Base
 	 */
 	private function jsonAction ()
 	{
-		$start = ($this->request['page'] - 1) * $this->request['rows'];
-		$end = $start + $this->request['rows'];
-
-		$view = new View();
-
-		$sort = new Sorter();
-
 		$objects = array();
-		$json_objects = array();
 
 		switch ($this->request['do'])
 		{
 			case "get_servers" :
 				$objects = $this->service->GetServers();
-				$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-				$i = 0;
-				foreach ($objects as $object)
-				{
-					if ($i >= $start && $i < $end)
-					{
-						$arr = array();
-						$arr['id'] = $object->Guid;
-						$arr['cell'] = array(
-							$object->Guid,
-							(int)$object->Enabled,
-							(int)$object->Connected,
-							$object->Name,
-							(int)$object->LastModified,
-							(int)$object->Port,
-							(int)$object->ErrorCode,
-							(int)$object->ChannelCount,
-							(int)$object->BotCount,
-							(int)$object->PacketCount,
-							$object->IrcLink
-						);
-						$json_objects[] = $arr;
-					}
-					$i++;
-				}
 				break;
 
 			case "get_channels_from_server" :
 				$objects = $this->service->GetChannelsFromServer($this->request['guid']);
-				$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-				$i = 0;
-				foreach ($objects as $object)
-				{
-					if ($i >= $start && $i < $end)
-					{
-						$arr = array();
-						$arr['id'] = $object->Guid;
-						$arr['cell'] = array(
-							$object->ParentGuid,
-							$object->Guid,
-							(int)$object->Enabled,
-							(int)$object->Connected,
-							$object->Name,
-							(int)$object->LastModified,
-							(int)$object->ErrorCode,
-							(int)$object->BotCount,
-							(int)$object->PacketCount,
-							$object->IrcLink
-						);
-						$json_objects[] = $arr;
-					}
-					$i++;
-				}
 				break;
 
 			case "get_bots_from_channel" :
 				$objects = $this->service->GetBotsFromChannel($this->request['guid']);
-				$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-				$i = 0;
-				foreach ($objects as $object)
-				{
-					if ($i >= $start && $i < $end)
-					{
-						$arr = array();
-						$arr['id'] = $object->Guid;
-						$arr['cell'] = array(
-							$object->ParentGuid,
-							$object->Guid,
-							(int)$object->Enabled,
-							(int)$object->Connected,
-							$object->Name,
-							(int)$object->LastModified,
-							(int)$object->BotState,
-							(int)$object->InfoQueueCurrent,
-							(int)$object->InfoQueueTotal,
-							(int)$object->InfoSlotCurrent,
-							(int)$object->InfoSlotTotal,
-							(float)$object->InfoSpeedCurrent,
-							(float)$object->InfoSpeedMax,
-							(int)$object->LastContact,
-							$object->LastMessage,
-							(int)$object->PacketCount,
-							$object->IrcLink
-						);
-						$json_objects[] = $arr;
-					}
-					$i++;
-				}
 				break;
 
 			case "get_packets_from_bot" :
 				$objects = $this->service->GetPacketsFromBot($this->request['guid']);
-				$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-				$i = 0;
-				foreach ($objects as $object)
-				{
-					if ($i >= $start && $i < $end)
-					{
-						$arr = array();
-						$arr['id'] = $object->Guid;
-						$arr['cell'] = array(
-							$object->ParentGuid,
-							$object->Guid,
-							(int)$object->Enabled,
-							(int)$object->Connected,
-							(int)$object->Id,
-							$object->Name,
-							(int)$object->LastModified,
-							(int)$object->LastUpdated,
-							(int)$object->LastMentioned,
-							(int)$object->Size,
-							$object->IrcLink
-						);
-						$json_objects[] = $arr;
-					}
-					$i++;
-				}
-				break;
-
-			case "search_packets" :
-				if (strlen($this->request['searchString']) >= 3)
-				{
-					$strings = explode(" ", $this->request['searchString']);
-					$objects = $this->service->SearchPackets($strings);
-
-					$sort->Sort($objects, $this->request['sidx'], $this->request['sord'] == "desc");
-					$i = 0;
-					foreach ($objects as $object)
-					{
-						if ($i >= $start && $i < $end)
-						{
-							$arr = array();
-							$arr['id'] = $object->Guid;
-							$arr['cell'] = array(
-								$object->ParentGuid,
-								$object->Guid,
-								(int)$object->Enabled,
-								(int)$object->Connected,
-								(int)$object->Id,
-								$object->Name,
-								(int)$object->LastModified,
-								(int)$object->LastUpdated,
-								(int)$object->LastMentioned,
-								(int)$object->Size,
-								$object->IrcLink,
-								$object->BotName,
-								$object->BotSpeed
-							);
-							$json_objects[] = $arr;
-						}
-						$i++;
-					}
-				}
 				break;
 		}
 
-		$objectsCount = sizeof($objects);
-		$json = array();
-		$json['page'] = $this->request['page'];
-		$json['total'] = ceil($objectsCount / $this->request['rows']);
-		$json['records'] = $objectsCount;
-		$json['rows'] = $json_objects;
+		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
 
+		$view = new View();
 		$view->assign('json', $json);
 		$content = $view->loadTemplate('json', __CLASS__);
 
