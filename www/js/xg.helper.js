@@ -58,9 +58,9 @@ var XGHelper = Class.create(
 		}
 		else if (speed < 1024 * 1024)
 		{
-			return (speed / 1024).toFixed(2) + " KB";
+			return (speed > 100 * 1024 ? (speed / 1024).toFixed(1) : (speed / 1024).toFixed(2)) + " KB";
 		}
-		return (speed / (1024 * 1024)).toFixed(2) + " MB";
+		return (speed > 100 * 1024 * 1024 ? (speed / (1024 * 1024)).toFixed(1) : (speed / (1024 * 1024)).toFixed(2)) + " MB";
 	},
 
 	/**
@@ -71,18 +71,18 @@ var XGHelper = Class.create(
 	{
 		var str = "";
 		if(time < 0 || time >= 106751991167300 || time == "106751991167300") { return str; }
-	
+
 		var buff = 0;
-	
+
 		if (time > 86400)
 		{
 			buff = Math.floor(time / 86400);
 			str += (buff >= 10 ? "" + buff : "0" + buff) + ":";
-	
+
 			time -= buff * 86400;
 		}
 		else if (str != "") { str += "00:"; }
-	
+
 		if (time > 3600)
 		{
 			buff = Math.floor(time / 3600);
@@ -90,7 +90,7 @@ var XGHelper = Class.create(
 			time -= buff * 3600;
 		}
 		else if (str != "") { str += "00:"; }
-	
+
 		if (time > 60)
 		{
 			buff = Math.floor(time / 60);
@@ -98,14 +98,14 @@ var XGHelper = Class.create(
 			time -= buff * 60;
 		}
 		else if (str != "") { str += "00:"; }
-	
+
 		if (time > 0)
 		{
 			buff = time;
 			str += (buff >= 10 ? "" + buff : "0" + buff);
 		}
 		else if (str != "") { str += "00"; }
-	
+
 		return str;
 	},
 

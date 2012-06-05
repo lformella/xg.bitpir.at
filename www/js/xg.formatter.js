@@ -17,24 +17,33 @@
 
 var XGFormatter = Class.create(
 {
-	/* ************************************************************************** */
-	/* SERVER FORMATER                                                            */
-	/* ************************************************************************** */
+	/* ************************************************************************************************************** */
+	/* SERVER FORMATER                                                                                                */
+	/* ************************************************************************************************************** */
 
 	formatServerIcon: function (server)
 	{
 		var str = "Server";
-	
-		if(!server.Enabled) { str += "Disabled"; }
-		else if(server.Connected) { str += "Connected"; }
-	
+
+		if(server.Enabled == "false") { str += "Disabled"; }
+		else if(server.Connected == "true") { str += "Connected"; }
+
 		return this.formatIcon2(str) + " " + server.Name;
 	},
 
+	formatChannelIcon: function (channel)
+	{
+		var str = "Channel";
 
-	/* ************************************************************************** */
-	/* SEARCH FORMATER                                                            */
-	/* ************************************************************************** */
+		if(channel.Enabled == "false") { str += "Disabled"; }
+		else if(channel.Connected == "true") { str += "Connected"; }
+
+		return this.formatIcon2(str) + " " + channel.Name;
+	},
+
+	/* ************************************************************************************************************** */
+	/* SEARCH FORMATER                                                                                                */
+	/* ************************************************************************************************************** */
 
 	formatSearchIcon: function (cellvalue)
 	{
@@ -50,16 +59,15 @@ var XGFormatter = Class.create(
 		return this.formatIcon2(str);
 	},
 
-
-	/* ************************************************************************** */
-	/* BOT FORMATER                                                               */
-	/* ************************************************************************** */
+	/* ************************************************************************************************************** */
+	/* BOT FORMATER                                                                                                   */
+	/* ************************************************************************************************************** */
 
 	formatBotIcon: function (bot)
 	{
 		var str = "Bot";
-	
-		if(!bot.Connected) { str += "Offline"; }
+
+		if(bot.Connected == "false") { str += "Off"; }
 		else
 		{
 			switch(bot.BotState)
@@ -73,7 +81,7 @@ var XGFormatter = Class.create(
 					break;
 
 				case "Active":
-					str += Speed2Image(bot.InfoSpeed);
+					str += this.speed2Image(bot.InfoSpeed);
 					break;
 
 				case "Waiting":
@@ -81,7 +89,7 @@ var XGFormatter = Class.create(
 					break;
 			}
 		}
-	
+
 		return this.formatIcon2(str);
 	},
 
@@ -131,23 +139,22 @@ var XGFormatter = Class.create(
 		return ret;
 	},
 
-
-	/* ************************************************************************** */
-	/* PACKET FORMATER                                                            */
-	/* ************************************************************************** */
+	/* ************************************************************************************************************** */
+	/* PACKET FORMATER                                                                                                */
+	/* ************************************************************************************************************** */
 
 	formatPacketIcon: function (packet)
-	{	
+	{
 		var str = "Packet";
-	
-		if(!packet.enabled) { str += "Disabled"; }
+
+		if(packet.Enabled == "false") { str += "Disabled"; }
 		else
 		{
-			if(packet.Connected) { str += Speed2Image(packet.Speed); }
-			else if (packet.Order == 1) { str += "Queued"; }
+			if(packet.Connected == "true") { str += this.speed2Image(packet.Speed); }
+			else if (packet.Order == "true") { str += "Queued"; }
 			else { str += "New"; }
 		}
-	
+
 		return this.formatIcon2(str);
 	},
 
@@ -176,21 +183,21 @@ var XGFormatter = Class.create(
 		{
 			ret += this.formatIcon("ExtDefault") + "&nbsp;&nbsp;";
 		}
-	
+
 		if(packet.Name.toLowerCase().indexOf("german") > -1)
 		{
 			ret += this.formatIcon("LanguageDe") + "&nbsp;&nbsp;";
 		}
-	
+
 		ret += packet.Name;
-	
-		if(packet.Connected)
+
+		if(packet.Connected == "true")
 		{
 			ret += "<br />";
-	
-			var a = ((packet.SizeStart) / packet.Size).toFixed(2) * 100;
-			var b = ((packet.SizeCurrent - packet.SizeStart) / packet.Size).toFixed(2) * 100;
-			var c = ((packet.SizeStop - packet.SizeCurrent) / packet.Size).toFixed(2) * 100;
+
+			var a = ((packet.StartSize) / packet.Size).toFixed(2) * 100;
+			var b = ((packet.CurrentSize - packet.StartSize) / packet.Size).toFixed(2) * 100;
+			var c = ((packet.StopSize - packet.CurrentSize) / packet.Size).toFixed(2) * 100;
 			if(a + b + c > 100)
 			{
 				c = 100 - a - b;
@@ -198,19 +205,28 @@ var XGFormatter = Class.create(
 			// Enum.TangoColor.SkyBlue.Middle
 			ret += "<div role='progressbar' class='ui-progressbar ui-widget ui-widget-content ui-corner-all' style='height:3px'>" +
 				"<div style='width: " + a + "%;float:left' class='ui-progressbar-value ui-corner-left'></div>" +
-				"<div style='width: " + b + "%;float:left;background:#" + (packet.checked ? Enum.TangoColor.SkyBlue.Dark : Enum.TangoColor.Plum.Dark) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
-				"<div style='width: " + c + "%;float:left;background:#" + (packet.checked ? Enum.TangoColor.SkyBlue.Light : Enum.TangoColor.Plum.Light) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
+				"<div style='width: " + b + "%;float:left;background:#" + (packet.IsChecked == "true" ? Enum.TangoColor.SkyBlue.Dark : Enum.TangoColor.Plum.Dark) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
+				"<div style='width: " + c + "%;float:left;background:#" + (packet.IsChecked == "true" ? Enum.TangoColor.SkyBlue.Light : Enum.TangoColor.Plum.Light) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
 				"</div><div class='clear'></div>";
 		}
-	
+
 		return ret;
 	},
 
+	/* ************************************************************************************************************** */
+	/* IMAGE FORMATER                                                                                                 */
+	/* ************************************************************************************************************** */
 
-	/* ************************************************************************** */
-	/* IMAGE FORMATER                                                             */
-	/* ************************************************************************** */
-	
+	speed2Image: function (speed)
+	{
+		if (speed < 1024 * 125) { return "DL0"; }
+		else if (speed < 1024 * 250) { return "DL1"; }
+		else if (speed < 1024 * 500) { return "DL2"; }
+		else if (speed < 1024 * 750) { return "DL3"; }
+		else if (speed < 1024 * 1000) { return "DL4"; }
+		else { return "DL5"; }
+	},
+
 	formatIcon: function (img)
 	{
 		return "<img src='image&" + img + "' />";
