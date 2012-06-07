@@ -80,9 +80,14 @@ class Search extends Base
 			$objects = $this->service->SearchPackets($strings);
 		}
 
-		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
-
 		$view = new View();
+
+		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
+		if(isset($this->request['callback']) && $this->request['callback'] != '')
+		{
+			$view->assign('callback', $this->request['callback']);
+		}
+
 		$view->assign('json', $json);
 		$content = $view->loadTemplate('json', __CLASS__);
 
