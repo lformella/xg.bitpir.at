@@ -120,12 +120,24 @@ class Service
 	}
 
 	/**
-	 * @param  string[] $strings
+	 * @param  string $string
 	 *
 	 * @return PacketSearch[]
 	 */
-	public function SearchPackets ($strings)
+	public function SearchPackets ($string)
 	{
+		$strings = explode(' ', $string);
+		foreach($strings as $key => $string)
+		{
+			$string = trim($string);
+			if($string == '')
+			{
+				unset($strings[$key]);
+			}
+		}
+		sort($strings);
+		$this->AddSearch(implode($strings, ' '));
+
 		$count = 0;
 		$str = '';
 		foreach ($strings as $string)
@@ -155,6 +167,23 @@ class Service
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\PacketSearch');
 
 		return !$result ? array() : $result;
+	}
+
+	/**
+	 * @param string $search
+	 * @return bool
+	 */
+	private function AddSearch($search)
+	{
+		$stmt = $this->pdo->prepare("
+			INSERT INTO search (search, lasttime) VALUES (:search, :lasttime) ON DUPLICATE KEY UPDATE count = count + 1, lasttime = :lasttime;
+		");
+
+		$stmt->bindValue(':search', $search, PDO::PARAM_STR);
+		$stmt->bindValue(':lasttime', time(), PDO::PARAM_STR);
+		$result = $stmt->execute();
+
+		return $result;
 	}
 
 	/**

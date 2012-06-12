@@ -76,8 +76,7 @@ class Search extends Base
 
 		if (strlen($this->request['searchString']) >= 3)
 		{
-			$strings = explode(" ", $this->request['searchString']);
-			$objects = $this->service->SearchPackets($strings);
+			$objects = $this->service->SearchPackets($this->request['searchString']);
 		}
 
 		$view = new View();

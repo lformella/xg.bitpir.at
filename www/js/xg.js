@@ -377,7 +377,7 @@ $(function ()
 		}
 	});
 
-	$('#search-input').delayedObserver(0.8,
+	$('#search-input').delayedObserver(1.1,
 		function (value)
 		{
 			DoSearch(value);
