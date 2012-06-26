@@ -71,7 +71,6 @@ var BaseController = Class.create(
 
 	trackPiwik: function (url, title)
 	{
-		return;
 		if (title == undefined)
 		{
 			title = document.title;
