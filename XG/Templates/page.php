@@ -40,6 +40,11 @@
 
 		<div class="menu-box">
 
+			<div class="searchBox">
+				<input id="search-input2"/>
+				<img class="icon" src="images/Search.png"/>
+			</div>
+
 			<a class="left icon <?php echo $view == "start" ? " active-page" : ""; ?>" href="?show=start" id="link-start">
 				<img class="icon left" src="images/client.png"/> Start
 			</a>

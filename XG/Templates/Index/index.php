@@ -7,3 +7,10 @@
 	<img src="images/Packet.png" alt=""/> <?php echo $count[4] ?> Packets<br/>
 
 </div>
+
+<script type="text/javascript">
+	$(function ()
+	{
+		new IndexController();
+	});
+</script>

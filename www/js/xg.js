@@ -19,32 +19,97 @@
 /* GLOBAL VARS / FUNCTIONS                                                                                            */
 /**********************************************************************************************************************/
 
-var id_server;
-var id_channel;
-var id_bot;
-var id_packet;
-var id_search;
-var last_search;
+var id_server, id_channel, id_bot, id_packet, id_search, last_search, Formatter,  Helper;
 
 var LANG_MONTH = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 var LANG_WEEKDAY = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 
-var Formatter;
-var Helper = new XGHelper();
-
 /**********************************************************************************************************************/
-/* GRID / FORM LOADER                                                                                                 */
+/* CONTROLLER                                                                                                         */
 /**********************************************************************************************************************/
 
-$(function ()
+var BaseController = Class.create(
 {
-	Formatter = new MyFormatter();
+	initialize: function()
+	{
+		var self = this;
 
-	/******************************************************************************************************************/
-	/* SERVER GRID                                                                                                    */
-	/******************************************************************************************************************/
+		Formatter = new MyFormatter();
+		Helper = new XGHelper();
 
-	jQuery("#servers").jqGrid(
+		$("#search-input2").keyup(function (e)
+		{
+			if (e.which == 13)
+			{
+				if(jQuery("#search").length)
+				{
+					self.doSearch($(this).val());
+				}
+				else
+				{
+					window.location = '?show=search#' + $(this).val();
+				}
+			}
+		});
+	},
+
+	doSearch: function (value)
+	{
+		if (last_search != value)
+		{
+			last_search = value;
+
+			$("#search-input").val(value);
+			$("#search-input2").val(value);
+
+			jQuery("#search").clearGridData();
+			jQuery("#search").setGridParam({url:"index.php?show=search&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
+
+			this.trackPiwik(document.location, document.title + " " + value);
+		}
+	},
+
+	trackPiwik: function (url, title)
+	{
+		return;
+		if (title == undefined)
+		{
+			title = document.title;
+		}
+		try
+		{
+			piwikTracker.setCustomUrl(url);
+			piwikTracker.setDocumentTitle(title);
+			piwikTracker.trackPageView();
+			piwikTracker.enableLinkTracking();
+		}
+		catch (err)
+		{
+		}
+	}
+});
+
+var IndexController = Class.create(BaseController,
+{
+	initialize: function($super)
+	{
+		$super();
+		var self = this;
+	}
+});
+
+var NetworkController = Class.create(BaseController,
+{
+	initialize: function($super)
+	{
+		$super();
+		var self = this;
+
+		/**************************************************************************************************************/
+		/* SERVER GRID                                                                                                */
+		/**************************************************************************************************************/
+
+		jQuery("#servers").jqGrid(
 		{
 			url:"index.php?show=network&action=json&do=get_servers",
 			datatype:"json",
@@ -86,11 +151,11 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#servers-pager', {edit:false, add:false, del:false, search:false});
 
-	/******************************************************************************************************************/
-	/* CHANNEL GRID                                                                                                   */
-	/******************************************************************************************************************/
+		/**************************************************************************************************************/
+		/* CHANNEL GRID                                                                                               */
+		/**************************************************************************************************************/
 
-	jQuery("#channels").jqGrid(
+		jQuery("#channels").jqGrid(
 		{
 			datatype:"json",
 			cmTemplate:{fixed:true},
@@ -130,11 +195,11 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#channels-pager', {edit:false, add:false, del:false, search:false});
 
-	/******************************************************************************************************************/
-	/* BOT GRID                                                                                                       */
-	/******************************************************************************************************************/
+		/**************************************************************************************************************/
+		/* BOT GRID                                                                                                   */
+		/**************************************************************************************************************/
 
-	jQuery("#bots").jqGrid(
+		jQuery("#bots").jqGrid(
 		{
 			//url: "index.php?show=network&action=json&do=get_bots_from_channel&guid=" + guid,
 			datatype:"json",
@@ -181,11 +246,11 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#bots-pager', {edit:false, add:false, del:false, search:false});
 
-	/******************************************************************************************************************/
-	/* PACKET GRID                                                                                                    */
-	/******************************************************************************************************************/
+		/**************************************************************************************************************/
+		/* PACKET GRID                                                                                                */
+		/**************************************************************************************************************/
 
-	jQuery("#packets").jqGrid(
+		jQuery("#packets").jqGrid(
 		{
 			datatype:"json",
 			cmTemplate:{fixed:true},
@@ -223,11 +288,123 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#packets-pager', {edit:false, add:false, del:false, search:true});
 
-	/******************************************************************************************************************/
-	/* SEARCH GRID                                                                                                    */
-	/******************************************************************************************************************/
+		/**************************************************************************************************************/
+		/* OTHER STUFF                                                                                                */
+		/**************************************************************************************************************/
 
-	jQuery("#search").jqGrid(
+		var networkSlider = $("#network-slider").sudoSlider({
+			controlsShow:false,
+			history:true,
+			autoheight:false,
+			numericText:['servers', 'channels', 'bots', 'packets'],
+			beforeAniFunc:function (t)
+			{
+				var obj = undefined;
+				switch (t)
+				{
+					case 1:
+						jQuery("#current_object").html('&nbsp;');
+						jQuery("#bread-server").fadeOut();
+						jQuery("#bread-channel").fadeOut();
+						jQuery("#bread-bot").fadeOut();
+						break;
+
+					case 2:
+						obj = jQuery('#servers').getRowData(id_server);
+						if (obj)
+						{
+							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-server").fadeIn();
+							self.trackPiwik(document.location, document.title + " " + obj.Name);
+						}
+						jQuery("#bread-channel").fadeOut();
+						jQuery("#bread-bot").fadeOut();
+						break;
+
+					case 3:
+						obj = jQuery('#servers').getRowData(id_server);
+						if (obj)
+						{
+							jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-server").fadeIn();
+						}
+						obj = jQuery('#channels').getRowData(id_channel);
+						if (obj)
+						{
+							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-channel").fadeIn();
+							self.trackPiwik(document.location, document.title + " " + obj.Name);
+						}
+						jQuery("#bread-bot").fadeOut();
+						break;
+
+					case 4:
+						obj = jQuery('#servers').getRowData(id_server);
+						if (obj)
+						{
+							jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-server").fadeIn();
+						}
+						obj = jQuery('#channels').getRowData(id_channel);
+						if (obj)
+						{
+							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-channel").fadeIn();
+						}
+						obj = jQuery('#bots').getRowData(id_bot);
+						if (obj)
+						{
+							jQuery("#bread-bot").html(obj.Connected + " " + obj.Name);
+							jQuery("#bread-bot").fadeIn();
+							self.trackPiwik(document.location, document.title + " " + obj.Name);
+						}
+						break;
+				}
+			}
+		});
+
+		$('#bread-home').click(function ()
+		{
+			networkSlider.goToSlide(1);
+		});
+		$('#bread-server').click(function ()
+		{
+			networkSlider.goToSlide(2);
+		});
+		$('#bread-channel').click(function ()
+		{
+			networkSlider.goToSlide(3);
+		});
+		$('#bread-bot').click(function ()
+		{
+			networkSlider.goToSlide(4);
+		});
+
+		$('.button').hover(function ()
+		{
+			$(this).css('cursor', 'pointer');
+		}, function ()
+		{
+			$(this).css('cursor', 'auto');
+		});
+	}
+});
+
+var SearchController = Class.create(BaseController,
+{
+	initialize: function($super)
+	{
+		$super();
+		var self = this;
+
+		/**************************************************************************************************************/
+		/* SEARCH GRID                                                                                                */
+		/**************************************************************************************************************/
+
+		jQuery("#search").jqGrid(
 		{
 			datatype:"json",
 			cmTemplate:{fixed:true},
@@ -266,139 +443,34 @@ $(function ()
 			sortorder:"asc"
 		}).navGrid('#search-pager', {edit:false, add:false, del:false, search:false});
 
-	/******************************************************************************************************************/
-	/* OTHER STUFF                                                                                                    */
-	/******************************************************************************************************************/
+		/**************************************************************************************************************/
+		/* OTHER STUFF                                                                                                */
+		/**************************************************************************************************************/
 
-	var networkSlider = $("#network-slider").sudoSlider({
-		controlsShow:false,
-		history:true,
-		autoheight:false,
-		numericText:['servers', 'channels', 'bots', 'packets'],
-		beforeAniFunc:function (t)
+		var search = window.location.hash.substr(1);
+		if(search != '')
 		{
-			var obj = undefined;
-			switch (t)
+			window.setTimeout(function()
 			{
-				case 1:
-					jQuery("#current_object").html('&nbsp;');
-					jQuery("#bread-server").fadeOut();
-					jQuery("#bread-channel").fadeOut();
-					jQuery("#bread-bot").fadeOut();
-					break;
-
-				case 2:
-					obj = jQuery('#servers').getRowData(id_server);
-					if (obj)
-					{
-						jQuery("#current_object").html(obj.IrcLink);
-						jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-server").fadeIn();
-						trackPiwik(document.location, document.title + " " + obj.Name);
-					}
-					jQuery("#bread-channel").fadeOut();
-					jQuery("#bread-bot").fadeOut();
-					break;
-
-				case 3:
-					obj = jQuery('#servers').getRowData(id_server);
-					if (obj)
-					{
-						jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-server").fadeIn();
-					}
-					obj = jQuery('#channels').getRowData(id_channel);
-					if (obj)
-					{
-						jQuery("#current_object").html(obj.IrcLink);
-						jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-channel").fadeIn();
-						trackPiwik(document.location, document.title + " " + obj.Name);
-					}
-					jQuery("#bread-bot").fadeOut();
-					break;
-
-				case 4:
-					obj = jQuery('#servers').getRowData(id_server);
-					if (obj)
-					{
-						jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-server").fadeIn();
-					}
-					obj = jQuery('#channels').getRowData(id_channel);
-					if (obj)
-					{
-						jQuery("#current_object").html(obj.IrcLink);
-						jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-channel").fadeIn();
-					}
-					obj = jQuery('#bots').getRowData(id_bot);
-					if (obj)
-					{
-						jQuery("#bread-bot").html(obj.Connected + " " + obj.Name);
-						jQuery("#bread-bot").fadeIn();
-						trackPiwik(document.location, document.title + " " + obj.Name);
-					}
-					break;
-			}
+				self.doSearch(search);
+			}, 1000);
 		}
-	});
 
-	$('#bread-home').click(function ()
-	{
-		networkSlider.goToSlide(1);
-	});
-	$('#bread-server').click(function ()
-	{
-		networkSlider.goToSlide(2);
-	});
-	$('#bread-channel').click(function ()
-	{
-		networkSlider.goToSlide(3);
-	});
-	$('#bread-bot').click(function ()
-	{
-		networkSlider.goToSlide(4);
-	});
-
-	$('.button').hover(function ()
-	{
-		$(this).css('cursor', 'pointer');
-	}, function ()
-	{
-		$(this).css('cursor', 'auto');
-	});
-
-	$("#search-input").keyup(function (e)
-	{
-		if (e.which == 13)
+		$("#search-input").keyup(function (e)
 		{
-			DoSearch($(this).val());
-		}
-	});
+			if (e.which == 13)
+			{
+				self.doSearch($(this).val());
+			}
+		});
 
-	$('#search-input').delayedObserver(1.1,
+		$('#search-input').delayedObserver(1.1,
 		function (value)
 		{
-			DoSearch(value);
+			self.doSearch(value);
 		});
-});
-
-/**********************************************************************************************************************/
-/* DO SOMETHING                                                                                                       */
-/**********************************************************************************************************************/
-
-function DoSearch (value)
-{
-	if (last_search != value)
-	{
-		last_search = value;
-		jQuery("#search").clearGridData();
-		jQuery("#search").setGridParam({url:"index.php?show=search&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
-
-		trackPiwik(document.location, document.title + " " + value);
 	}
-}
+});
 
 /**********************************************************************************************************************/
 /* CUSTOM FORMATER                                                                                                    */
@@ -543,25 +615,3 @@ var MyFormatter = Class.create(XGFormatter,
 		return ret;
 	}
 });
-
-/**********************************************************************************************************************/
-/* HELPER                                                                                                             */
-/**********************************************************************************************************************/
-
-function trackPiwik (url, title)
-{
-	if (title == undefined)
-	{
-		title = document.title;
-	}
-	try
-	{
-		piwikTracker.setCustomUrl(url);
-		piwikTracker.setDocumentTitle(title);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	}
-	catch (err)
-	{
-	}
-}

@@ -89,7 +89,7 @@ small
 	float: left;
 }
 
-.form-field
+.form-field, .searchBox input
 {
 	padding: 3px;
 	margin-top: 2px;
@@ -179,4 +179,21 @@ input
 	margin: 10px 0 0 0;
 	display: block;
 	padding: 1px 10px 1px 10px;
+}
+
+div.searchBox {
+	padding: 0 3px;
+	width: 255px;
+	float: right;
+	background: rgba(255, 255, 255, 0.5);
+	border-radius: 5px;
+}
+
+.searchBox input {
+	width: 210px;
+	margin-bottom: 3px;
+}
+
+.searchBox .icon {
+	padding: 0;
 }

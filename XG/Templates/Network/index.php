@@ -33,3 +33,10 @@
 	<div class="footer" id="current_object">&nbsp;</div>
 
 </div>
+
+<script type="text/javascript">
+	$(function ()
+	{
+		new NetworkController();
+	});
+</script>
