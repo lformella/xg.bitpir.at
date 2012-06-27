@@ -1,4 +1,4 @@
-<div class="ui-widget-content form-box">
+<div class="ui-widget-content box">
 
 	<img src="images/Server.png" alt=""/> <?php echo $count[0] ?> Server connected<br/>
 	<img src="images/Server_disabled.png" alt=""/> <?php echo $count[1] ?> Server disconnected<br/><br/>

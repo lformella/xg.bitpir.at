@@ -272,7 +272,7 @@ var NetworkController = Class.create(BaseController,
 					var obj = jQuery('#packets').getRowData(id);
 					if (obj)
 					{
-						jQuery("#current_object").html(obj.IrcLink);
+						jQuery("#ircLink").html(obj.IrcLink);
 					}
 				}
 			},
@@ -302,7 +302,7 @@ var NetworkController = Class.create(BaseController,
 				switch (t)
 				{
 					case 1:
-						jQuery("#current_object").html('&nbsp;');
+						jQuery("#ircLink").html('&nbsp;');
 						jQuery("#bread-server").fadeOut();
 						jQuery("#bread-channel").fadeOut();
 						jQuery("#bread-bot").fadeOut();
@@ -312,7 +312,7 @@ var NetworkController = Class.create(BaseController,
 						obj = jQuery('#servers').getRowData(id_server);
 						if (obj)
 						{
-							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#ircLink").html(obj.IrcLink);
 							jQuery("#bread-server").html(obj.Connected + " " + obj.Name);
 							jQuery("#bread-server").fadeIn();
 							self.trackPiwik(document.location, document.title + " " + obj.Name);
@@ -331,7 +331,7 @@ var NetworkController = Class.create(BaseController,
 						obj = jQuery('#channels').getRowData(id_channel);
 						if (obj)
 						{
-							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#ircLink").html(obj.IrcLink);
 							jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
 							jQuery("#bread-channel").fadeIn();
 							self.trackPiwik(document.location, document.title + " " + obj.Name);
@@ -349,7 +349,7 @@ var NetworkController = Class.create(BaseController,
 						obj = jQuery('#channels').getRowData(id_channel);
 						if (obj)
 						{
-							jQuery("#current_object").html(obj.IrcLink);
+							jQuery("#ircLink").html(obj.IrcLink);
 							jQuery("#bread-channel").html(obj.Connected + " " + obj.Name);
 							jQuery("#bread-channel").fadeIn();
 						}
@@ -427,7 +427,7 @@ var SearchController = Class.create(BaseController,
 					var obj = jQuery('#search').getRowData(id);
 					if (obj)
 					{
-						jQuery("#current_object").html(obj.IrcLink);
+						jQuery("#ircLink").html(obj.IrcLink);
 					}
 				}
 			},
@@ -467,6 +467,12 @@ var SearchController = Class.create(BaseController,
 		function (value)
 		{
 			self.doSearch(value);
+		});
+
+		$('#searchOptionsButton').button();
+		$('#searchOptionsButton').click(function()
+		{
+			$('#searchOptions').toggle();
 		});
 	}
 });

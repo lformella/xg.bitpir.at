@@ -1,6 +1,6 @@
-<div class="ui-widget-content form-box">
+<div class="ui-widget-content box">
 
-	<div class="ui-widget-header breadCrumb">
+	<div id="breadCrumb" class="ui-widget-header">
 		<ul>
 			<li id="bread-home" class="button"><img src="images/client.png"/> Home</li>
 			<li id="bread-server" class="button hidden"></li>
@@ -30,7 +30,7 @@
 		</ul>
 	</div>
 
-	<div class="footer" id="current_object">&nbsp;</div>
+	<div id="ircLink">&nbsp;</div>
 
 </div>
 

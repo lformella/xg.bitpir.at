@@ -38,26 +38,28 @@
 
 		<div id="author-tag"></div>
 
-		<div class="menu-box">
+		<div id="headerBox" class="box">
 
-			<div class="searchBox">
+			<div id="searchBox">
 				<input id="search-input2"/>
 				<img class="icon" src="images/Search.png"/>
 			</div>
 
-			<a class="left icon <?php echo $view == "start" ? " active-page" : ""; ?>" href="?show=start" id="link-start">
-				<img class="icon left" src="images/client.png"/> Start
-			</a>
-			<a class="left icon <?php echo $view == "network" ? " active-page" : ""; ?>" href="?show=network" id="link-network">
-				<img class="icon left" src="images/Server.png"/> Networks
-			</a>
-			<a class="left icon <?php echo $view == "search" ? " active-page" : ""; ?>" href="?show=search" id="link-search">
-				<img class="icon left" src="images/Search.png"/> Search
-			</a>
-			<a class="left icon" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZW786UWCWEJWL"
-			   id="link-donate" target="_blank">
-				<img class="icon left" src="images/Donate.png"/> Donate
-			</a>
+			<div id="menuBox">
+				<a class="left icon <?php echo $view == "index" ? " active" : ""; ?>" href="?show=index">
+					<img class="icon left" src="images/client.png"/> Start
+				</a>
+				<a class="left icon <?php echo $view == "network" ? " active" : ""; ?>" href="?show=network">
+					<img class="icon left" src="images/Server.png"/> Networks
+				</a>
+				<a class="left icon <?php echo $view == "search" ? " active" : ""; ?>" href="?show=search">
+					<img class="icon left" src="images/Search.png"/> Search
+				</a>
+				<a class="left icon" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZW786UWCWEJWL"
+				   id="link-donate" target="_blank">
+					<img class="icon left" src="images/Donate.png"/> Donate
+				</a>
+			</div>
 
 			<div class="clear"></div>
 		</div>
@@ -66,7 +68,7 @@
 
 		<?php echo $content; ?>
 
-		<div class="ui-widget-content form-box">Powered by <img src="images/breadcrumb_arrow.png"/><a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v0.9</a>
+		<div class="ui-widget-content box">Powered by <img src="images/breadcrumb_arrow.png"/><a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v0.9</a>
 			<?php
 			$pid = @file_get_contents("/home/lars/xg/pid");
 
