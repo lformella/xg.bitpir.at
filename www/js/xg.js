@@ -41,32 +41,12 @@ var BaseController = Class.create(
 		{
 			if (e.which == 13)
 			{
-				if(jQuery("#search").length)
-				{
-					self.doSearch($(this).val());
-				}
-				else
+				if(!jQuery("#search").length)
 				{
 					window.location = '?show=search#' + $(this).val();
 				}
 			}
 		});
-	},
-
-	doSearch: function (value)
-	{
-		if (last_search != value)
-		{
-			last_search = value;
-
-			$("#searchInput").val(value);
-			$("#searchInput2").val(value);
-
-			jQuery("#search").clearGridData();
-			jQuery("#search").setGridParam({url:"index.php?show=search&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
-
-			this.trackPiwik(document.location, document.title + " " + value);
-		}
 	},
 
 	trackPiwik: function (url, title)
@@ -455,12 +435,25 @@ var SearchController = Class.create(BaseController,
 			}, 1000);
 		}
 
-		$("#searchInput").keyup(function (e)
+		$(".searchInput").keyup(function (e)
 		{
 			if (e.which == 13)
 			{
 				self.doSearch($(this).val());
 			}
+		});
+
+		$("input.triggerSearch").keyup(function (e)
+		{
+			if (e.which == 13)
+			{
+				self.doSearch($("#searchInput").val());
+			}
+		});
+
+		$("select.triggerSearch").change(function (e)
+		{
+			self.doSearch($("#searchInput").val());
 		});
 
 		$('#searchInput').delayedObserver(1.1,
@@ -474,6 +467,41 @@ var SearchController = Class.create(BaseController,
 		{
 			$('#searchOptions').toggle();
 		});
+	},
+
+	doSearch: function (value)
+	{
+		$("#searchInput").val(value);
+		$("#searchInput2").val(value);
+
+		var searchUrl = "index.php?show=search&action=json&do=search_packets&searchString=" + value;
+
+		if($('#lastMentionedValue').val() != '')
+		{
+			searchUrl += "&searchLastMentioned=" + ($('#lastMentionedValue').val() * $('#lastMentionedSelect').val());
+		}
+		if($('#sizeMin').val() != '')
+		{
+			searchUrl += "&searchSizeMin=" + ($('#sizeMinValue').val() * $('#sizeMinSelect').val());
+		}
+		if($('#sizeMax').val() != '')
+		{
+			searchUrl += "&searchSizeMax=" + ($('#sizeMaxValue').val() * $('#sizeMaxSelect').val());
+		}
+		if($('#botState').val() != '')
+		{
+			searchUrl += "&searchBotState=" + $('#botState').val();
+		}
+
+		if (last_search != searchUrl)
+		{
+			last_search = searchUrl;
+
+			jQuery("#search").clearGridData();
+			jQuery("#search").setGridParam({url: searchUrl}).trigger("reloadGrid");
+
+			this.trackPiwik(document.location, document.title + " " + value);
+		}
 	}
 });
 

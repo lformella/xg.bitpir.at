@@ -25,6 +25,7 @@ use XG\Classes\Domain\Model\Channel;
 use XG\Classes\Domain\Model\Packet;
 use XG\Classes\Domain\Model\PacketSearch;
 use XG\Classes\Domain\Model\Server;
+use XG\Classes\Domain\Model\SearchOption;
 
 class Service
 {
@@ -120,13 +121,13 @@ class Service
 	}
 
 	/**
-	 * @param  string $string
+	 * @param  SearchOption $searchOptions
 	 *
 	 * @return PacketSearch[]
 	 */
-	public function SearchPackets ($string)
+	public function SearchPackets ($searchOptions)
 	{
-		$strings = explode(' ', $string);
+		$strings = explode(' ', $searchOptions->Name);
 		foreach($strings as $key => $string)
 		{
 			$string = trim($string);
@@ -149,6 +150,34 @@ class Service
 			$str .= ' p.name LIKE :string' . $count++ . ' ';
 		}
 
+		if($searchOptions->MaxSize > 0)
+		{
+			$str .= ' AND p.size < :maxSize ';
+		}
+		if($searchOptions->MinSize > 0)
+		{
+			$str .= ' AND p.size > :minSize ';
+		}
+		if($searchOptions->LastMentioned > 0)
+		{
+			$str .= ' AND p.lastMentioned > :lastMentioned ';
+		}
+
+		switch($searchOptions->BotState)
+		{
+			case 0:
+				break;
+			case 1:
+				$str .= ' AND b.infoSlotCurrent > 0';
+				break;
+			case 2:
+				$str .= ' AND (b.infoSlotCurrent > 0 OR b.infoQueueCurrent > 0)';
+				break;
+			case 3:
+				$str .= ' AND b.Connected == 1';
+				break;
+		}
+
 		$stmt = $this->pdo->prepare("
 			SELECT p.*, CONCAT('xdcc://', s.name, '/', s.name, '/', c.name, '/', b.name, '/#', p.id, '/', p.name, '/') AS IrcLink, b.Name AS BotName, b.InfoSpeedMax AS BotSpeed
 			FROM packet p
@@ -163,6 +192,20 @@ class Service
 		{
 			$stmt->bindValue(':string' . $count++, '%' . $string . '%', PDO::PARAM_STR);
 		}
+
+		if($searchOptions->MaxSize > 0)
+		{
+			$stmt->bindValue(':maxSize', $searchOptions->MaxSize, PDO::PARAM_INT);
+		}
+		if($searchOptions->MinSize > 0)
+		{
+			$stmt->bindValue(':minSize', $searchOptions->MinSize, PDO::PARAM_INT);
+		}
+		if($searchOptions->LastMentioned > 0)
+		{
+			$stmt->bindValue(':lastMentioned', time() - $searchOptions->LastMentioned, PDO::PARAM_INT);
+		}
+
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\PacketSearch');
 

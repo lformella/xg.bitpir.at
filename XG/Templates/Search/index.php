@@ -1,16 +1,15 @@
 <?php
 
-$lastMentionedArray = array(1 => 'Minutes', 60 => 'Hours', 1440 => 'Days', 10080 => 'Weeks');
-$sizeArray1 = array(1 => 'Bigger', 2 => 'Smaller');
-$sizeArray2 = array(1 => 'KB', 1024 => 'MB', 1048576 => 'GB');
-$botStateArray = array(1 => 'has free Slots', 2 => 'has free Queue', 3 => 'is online');
+$lastMentionedArray = array(60 => 'Minutes', 3600 => 'Hours', 86400 => 'Days', 604800 => 'Weeks');
+$sizeArray = array(1024 => 'KB', 1048576 => 'MB', 1073741824 => 'GB');
+$botStateArray = array(0 => 'ignore', 1 => 'has free Slots', 2 => 'has free Queue', 3 => 'is online');
 
 function arrayToSelect($name, $array)
 {
-	echo "<select id=".$name.">";
+	echo "<select id='".$name."' class='triggerSearch'>";
 	foreach($array as $key => $value)
 	{
-		echo "<option value=".$key.">".$value."</option>";
+		echo "<option value='".$key."'>".$value."</option>";
 	}
 	echo "</select>";
 }
@@ -21,32 +20,41 @@ function arrayToSelect($name, $array)
 
 	<div>
 		<label for="searchInput"><img class="icon left" src="images/Search.png"/> Search for: </label>
-		<input type="text" name="search" id="searchInput" class="input" value="" size="96" tabindex="10"/>
+		<input type="text" name="search" id="searchInput" class="input searchInput" value="" size="96" tabindex="10"/>
 		<button id="searchOptionsButton">Options</button>
 	</div>
 
 	<div id="searchOptions" class="hidden">
-		Last Mentioned:
-		<input id="lastMentionedValue">
-		<?php
-		arrayToSelect('lastMentionedSelect', $lastMentionedArray);
-		?>
-		ago
+		<div class="left">
+			Last Mentioned:
+			<input id="lastMentionedValue" class="triggerSearch">
+			<?php
+			arrayToSelect('lastMentionedSelect', $lastMentionedArray);
+			?>
+			ago
+		</div>
 
-		Size:
-		<?php
-		arrayToSelect('sizeSelect1', $sizeArray1);
-		?>
-		than <input id="sizeValue">
-		<?php
-		arrayToSelect('sizeSelect2', $sizeArray2);
-		?>
+		<div class="left">
+			Size: bigger than
+			<input id="sizeMinValue" class="triggerSearch">
+			<?php
+			arrayToSelect('sizeMinSelect', $sizeArray);
+			?>
+			smaller than
+			<input id="sizeMaxValue" class="triggerSearch">
+			<?php
+			arrayToSelect('sizeMaxSelect', $sizeArray);
+			?>
+		</div>
 
-		Bot:
-		<?php
-		arrayToSelect('botState', $botStateArray);
-		?>
+		<div class="left">
+			Bot:
+			<?php
+			arrayToSelect('botState', $botStateArray);
+			?>
+		</div>
 
+		<div class="clear"></div>
 	</div>
 
 	<table id="search"></table>

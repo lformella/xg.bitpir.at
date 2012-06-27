@@ -18,6 +18,7 @@
 
 namespace XG\Classes\Controller;
 
+use XG\Classes\Domain\Model\SearchOption;
 use XG\Classes\Domain\Service;
 use XG\Classes\Domain\Sorter;
 use XG\Classes\View;
@@ -75,9 +76,16 @@ class Search extends Base
 	{
 		$objects = array();
 
-		if (strlen($this->request['searchString']) >= 3)
+		$searchOption = new SearchOption();
+		$searchOption->Name = isset($this->request['searchString']) ? $this->request['searchString'] : "";
+		$searchOption->MaxSize = isset($this->request['searchSizeMax']) ? intval($this->request['searchSizeMax']) : 0;
+		$searchOption->MinSize = isset($this->request['searchSizeMin']) ? intval($this->request['searchSizeMin']) : 0;
+		$searchOption->LastMentioned = isset($this->request['searchLastMentioned']) ? intval($this->request['searchLastMentioned']) : 0;
+		$searchOption->BotState = isset($this->request['searchBotState']) ? intval($this->request['searchBotState']) : 0;
+
+		if (strlen($searchOption->Name) >= 3)
 		{
-			$objects = $this->service->SearchPackets($this->request['searchString']);
+			$objects = $this->service->SearchPackets($searchOption);
 		}
 
 		$view = new View();

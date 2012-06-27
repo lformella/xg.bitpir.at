@@ -41,7 +41,7 @@
 		<div id="headerBox" class="box">
 
 			<div id="searchBox">
-				<input id="searchInput2"/>
+				<input id="searchInput2" class="searchInput"/>
 				<img class="icon" src="images/Search.png"/>
 			</div>
 
