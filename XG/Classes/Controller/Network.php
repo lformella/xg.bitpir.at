@@ -60,6 +60,7 @@ class Network extends Base
 		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new View();
+		$view->assign('view', 'network');
 		$view->assign('title', 'Networks');
 		$view->assign('content', $content);
 		$content = $view->loadTemplate('page');

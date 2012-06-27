@@ -60,6 +60,7 @@ class Search extends Base
 		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new View();
+		$view->assign('view', 'search');
 		$view->assign('title', 'Search');
 		$view->assign('content', $content);
 		$content = $view->loadTemplate('page');

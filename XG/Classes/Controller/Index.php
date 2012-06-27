@@ -69,6 +69,7 @@ class Index extends Base
 		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new View();
+		$view->assign('view', 'index');
 		$view->assign('title', '');
 		$view->assign('content', $content);
 		$content = $view->loadTemplate('page');
