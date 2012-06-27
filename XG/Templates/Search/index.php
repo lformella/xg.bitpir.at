@@ -20,8 +20,8 @@ function arrayToSelect($name, $array)
 <div class="ui-widget-content box">
 
 	<div>
-		<label for="search-input"><img class="icon left" src="images/Search.png"/> Search for: </label>
-		<input type="text" name="search" id="search-input" class="input" value="" size="96" tabindex="10"/>
+		<label for="searchInput"><img class="icon left" src="images/Search.png"/> Search for: </label>
+		<input type="text" name="search" id="searchInput" class="input" value="" size="96" tabindex="10"/>
 		<button id="searchOptionsButton">Options</button>
 	</div>
 

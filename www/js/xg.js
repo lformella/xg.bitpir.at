@@ -37,7 +37,7 @@ var BaseController = Class.create(
 		Formatter = new MyFormatter();
 		Helper = new XGHelper();
 
-		$("#search-input2").keyup(function (e)
+		$("#searchInput2").keyup(function (e)
 		{
 			if (e.which == 13)
 			{
@@ -59,8 +59,8 @@ var BaseController = Class.create(
 		{
 			last_search = value;
 
-			$("#search-input").val(value);
-			$("#search-input2").val(value);
+			$("#searchInput").val(value);
+			$("#searchInput2").val(value);
 
 			jQuery("#search").clearGridData();
 			jQuery("#search").setGridParam({url:"index.php?show=search&action=json&do=search_packets&searchString=" + value}).trigger("reloadGrid");
@@ -455,7 +455,7 @@ var SearchController = Class.create(BaseController,
 			}, 1000);
 		}
 
-		$("#search-input").keyup(function (e)
+		$("#searchInput").keyup(function (e)
 		{
 			if (e.which == 13)
 			{
@@ -463,7 +463,7 @@ var SearchController = Class.create(BaseController,
 			}
 		});
 
-		$('#search-input').delayedObserver(1.1,
+		$('#searchInput').delayedObserver(1.1,
 		function (value)
 		{
 			self.doSearch(value);
