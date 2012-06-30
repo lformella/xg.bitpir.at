@@ -64,8 +64,11 @@ class Index extends Base
 			$count[4] += $server->PacketCount;
 		}
 
+		$searches = $this->service->GetSearches(50);
+
 		$view = new View();
 		$view->assign('count', $count);
+		$view->assign('searches', $searches);
 		$content = $view->loadTemplate('index', __CLASS__);
 
 		$view = new View();

@@ -230,6 +230,27 @@ class Service
 	}
 
 	/**
+	 * @param int $limit
+	 * @return string[]
+	 */
+	public function GetSearches($limit)
+	{
+		$stmt = $this->pdo->prepare("SELECT search, count FROM search ORDER BY lasttime DESC, count DESC LIMIT 0, :limit;");
+
+		$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+		$stmt->execute();
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		$return = array();
+		foreach($result as $row)
+		{
+			$return[$row['search']] = $row['count'];
+		}
+
+		return $return;
+	}
+
+	/**
 	 * @param Base[] $objects
 	 * @param int $sidx
 	 * @param string $sord

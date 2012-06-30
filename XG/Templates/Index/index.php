@@ -6,6 +6,18 @@
 	<img src="images/Bot.png" alt=""/> <?php echo $count[3] ?> Bots<br/>
 	<img src="images/Packet.png" alt=""/> <?php echo $count[4] ?> Packets<br/>
 
+	<div id="lastSearches">
+		<div>Last searches:</div>
+		<?php
+		foreach($searches as $search => $count)
+		{
+			echo '<span>|</span> ';
+			echo '<span><a href="?show=search#' . $search . '" title="Searched ' . $count . ' time(s)">' . str_replace(' ', '&nbsp;', $search) . '</a></span>';
+		}
+		echo '<span>|</span> ';
+		?>
+	</div>
+
 </div>
 
 <script type="text/javascript">

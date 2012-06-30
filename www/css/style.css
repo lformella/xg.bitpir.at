@@ -239,3 +239,20 @@ small
 {
 	width: 30px;
 }
+
+#lastSearches
+{
+	padding: 20px 0 0 10px;
+	text-align: center;
+}
+
+#lastSearches > div
+{
+	padding: 10px 0;
+}
+
+#lastSearches > span
+{
+	padding: 0 5px;
+	whitespace: nowrap;
+}
