@@ -136,7 +136,7 @@ class Service
 				unset($strings[$key]);
 			}
 		}
-		sort($strings);
+		#sort($strings);
 		$this->AddSearch(implode($strings, ' '));
 
 		$count = 0;
