@@ -93,7 +93,7 @@
 
 		<?php echo $content; ?>
 
-		<div class="ui-widget-content box">Powered by <img src="images/breadcrumb_arrow.png"/><a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v0.9</a>
+		<div class="ui-widget-content box">Powered by <img src="images/breadcrumb_arrow.png"/><a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v0.9.2</a>
 			<?php
 			$pid = @file_get_contents("/home/lars/xg/pid");
 
