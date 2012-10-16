@@ -19,7 +19,7 @@
 /* GLOBAL VARS / FUNCTIONS                                                                                            */
 /**********************************************************************************************************************/
 
-var id_server, id_channel, id_bot, id_packet, id_search, last_search, Formatter,  Helper;
+var id_server, id_channel, id_bot, id_packet, id_search, last_search, Formatter,  Helper, current_search;
 
 var LANG_MONTH = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 var LANG_WEEKDAY = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
@@ -60,6 +60,18 @@ var BaseController = Class.create(
 			piwikTracker.setCustomUrl(url);
 			piwikTracker.setDocumentTitle(title);
 			piwikTracker.trackPageView();
+			piwikTracker.enableLinkTracking();
+		}
+		catch (err)
+		{
+		}
+	},
+
+	trackPiwikSearch: function (keyword, category, results)
+	{
+		try
+		{
+			piwikTracker.trackSiteSearch(keyword, category, results);
 			piwikTracker.enableLinkTracking();
 		}
 		catch (err)
@@ -411,6 +423,10 @@ var SearchController = Class.create(BaseController,
 					}
 				}
 			},
+			loadComplete:function(data)
+			{
+				self.trackPiwikSearch(current_search, false, data.records);
+			},
 			rowNum:20,
 			rowList:[20, 40, 80, 160],
 			pager:jQuery('#search-pager'),
@@ -500,7 +516,7 @@ var SearchController = Class.create(BaseController,
 			jQuery("#search").clearGridData();
 			jQuery("#search").setGridParam({url: searchUrl}).trigger("reloadGrid");
 
-			this.trackPiwik(document.location, document.title + " " + value);
+			current_search = value;
 		}
 	}
 });
