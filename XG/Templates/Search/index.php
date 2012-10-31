@@ -41,8 +41,8 @@ function arrayToSelect($name, $array)
 <div class="ui-widget-content box">
 
 	<div>
-		<label for="searchInput"><img class="icon left" src="images/Search.png"/> Search for: </label>
-		<input type="text" name="search" id="searchInput" class="input searchInput" value="" size="96" tabindex="10"/>
+		<label for="searchInput"><i class="icon-big icon-search"></i> Search for: </label>
+		<input type="text" name="search" id="searchInput" class="input searchInput" value="" size="94" tabindex="10"/>
 		<button id="searchOptionsButton">Options</button>
 	</div>
 

@@ -1,121 +1,119 @@
-//  
-//  Copyright (C) 2011 Lars Formella <ich@larsformella.de>
-// 
-//  This program is free software: you can redistribute it and/or modify
+//
+//  xg.locale-de.js
+//
+//  Author:
+//       Lars Formella <ich@larsformella.de>
+//
+//  Copyright (c) 2012 Lars Formella
+//
+//  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
+//  the Free Software Foundation; either version 2 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
 
-$(function ()
+LANG_MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+LANG_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+LANG_WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+translatedArray =
 {
-	/* ********************************************************************** */
-	/* PASSWORD DIALOG                                                        */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* PASSWORD DIALOG                                                                                                */
+	/* ************************************************************************************************************** */
 
-	$("#password_tip").html("Bitte gib das Passwort f&uuml;r diese Webseite ein.");
-	$("#password_label").html("Passwort");
-	$("#dialog_password").dialog("option", "title", "Passwort ben&ouml;tigt");
-	$("#dialog_password").dialog("option", "buttons", [
-		{ text:"Verbinden", click:function ()
-		{
-			ButtonConnectClicked($("#dialog_password"));
-		} }
-	]);
+	"Please enter the password for this webfrontend.": "Bitte gib das Passwort f&uuml;r diese Webseite ein.",
+	"Password": "Passwort",
+	"Password required": "Passwort ben&ouml;tigt",
+	"Connect": "Verbinden",
 
-	/* ********************************************************************** */
-	/* SERVER / CHANNEL DIALOG                                                */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* OTHER DIALOGS                                                                                                  */
+	/* ************************************************************************************************************** */
 
-	$("#server_button").html("Server");
-	$("#server_tip").html("Bitte gib den neuen Server Namen ein.");
-	$("#server_label").html("Server");
-	$("#dialog_server").dialog("option", "title", "Neuen Server einf&uuml;gen");
-	$("#dialog_server").dialog("option", "buttons", [
-		{ html:"Server einf&uuml;gen", click:function ()
-		{
-			ButtonInsertServerClicked($("#dialog_server"));
-		} },
-		{ html:"Abbrechen", click:function ()
-		{
-			ButtonCancelClicked($("#dialog_server"));
-		} }
-	]);
+	"Change Servers and Channels": "Server und Channels &auml;ndern",
+	"View Statistics": "Statistiken anschauen",
+	"View Snapshots": "Erweiterte Statistiken anschauen",
 
-	$("#channel_button").html("Kanal");
-	$("#channel_tip").html("Bitte gib den neuen Channel Namen ein.");
-	$("#channel_label").html("Kanal");
-	$("#dialog_channel").dialog("option", "title", "Neuen Kanal einf&uuml;gen");
-	$("#dialog_channel").dialog("option", "buttons", [
-		{ html:"Kanal einf&uuml;gen", click:function ()
-		{
-			ButtonInsertChannelClicked($("#dialog_channel"));
-		} },
-		{ html:"Abbrechen", click:function ()
-		{
-			ButtonCancelClicked($("#dialog_channel"));
-		} }
-	]);
+	/* ************************************************************************************************************** */
+	/* GRIDS                                                                                                          */
+	/* ************************************************************************************************************** */
 
-	$("#current_item_button").html("Aktuelles Objekt");
-	$("#delete_tip").html("Willst du wirklich das ausgew&auml;lte Objekt l&ouml;schen.");
-	$("#dialog_delete").dialog("option", "title", "Wirklich l&ouml;schen");
-	$("#dialog_delete").dialog("option", "buttons", [
-		{ html:"Ja", click:function ()
-		{
-			ButtonYesClicked($("#dialog_delete"));
-		} },
-		{ html:"Nein", click:function ()
-		{
-			ButtonCancelClicked($("#dialog_delete"));
-		} }
-	]);
+	"Name": "Name",
+	"Speed": "Geschw.",
+	"Q-Pos": "S-Pos",
+	"Q-Time": "S-Zeit",
+	"max Speed": "max. Geschw.",
+	"Slots": "Pl&auml;tze",
+	"Queue": "Schlange",
+	"Size": "Gr&ouml;&szlig;e",
 
-	/* ********************************************************************** */
-	/* BOT GRID                                                               */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* PACKET GRID                                                                                                    */
+	/* ************************************************************************************************************** */
 
-	jQuery("#bots").setLabel(7, 'Geschwindigkeit');
-	jQuery("#bots").setLabel(8, 'S-Pos');
-	jQuery("#bots").setLabel(9, 'S-Zeit');
-	jQuery("#bots").setLabel(10, 'Geschwindigkeit');
-	jQuery("#bots").setLabel(12, 'Pl&auml;tze');
-	jQuery("#bots").setLabel(14, 'Schlange');
+	"Packets": "Pakete",
+	"Time Missing": "Zeit",
+	"Last Updated": "Aktualisiert",
+	"Updated": "Aktualisiert",
 
-	/* ********************************************************************** */
-	/* PACKET GRID                                                            */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* SEARCH GRID                                                                                                    */
+	/* ************************************************************************************************************** */
 
-	jQuery("#packets").setCaption("Pakete");
-	jQuery("#packets").setLabel(8, 'Gr&ouml;&szlig;e');
-	jQuery("#packets").setLabel(9, 'Geschwindigkeit');
-	jQuery("#packets").setLabel(10, 'Zeit');
-	jQuery("#packets").setLabel(16, 'Aktualisiert');
+	"ODay Packets": "neue Pakete von heute",
+	"OWeek Packets": "neue Pakete dieser Woche",
+	"Downloads": "Downloads",
+	"Enabled Packets": "Aktivierte Pakete",
 
-	/* ********************************************************************** */
-	/* SEARCH GRID                                                            */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* SEARCH GRID                                                                                                    */
+	/* ************************************************************************************************************** */
 
-	jQuery("#searches").setCaption("Suche");
-	jQuery("#searches").setLabel(1, "Suche");
-	jQuery("#searches").setRowData(1, {name:"ODay Pakete"});
-	jQuery("#searches").setRowData(2, {name:"OWeek Pakete"});
-	jQuery("#searches").setRowData(3, {name:"Downloads"});
-	jQuery("#searches").setRowData(4, {name:"Aktivierte Pakete"});
+	"Search via xg.bitpir.at": "Suche via xg.bitpir.at",
+	"Last Mentioned": "Aktualisiert",
+	"Bot Speed": "Geschw.",
 
-	/* ********************************************************************** */
-	/* OTHERS                                                                 */
-	/* ********************************************************************** */
+	/* ************************************************************************************************************** */
+	/* SNAPSHOTS                                                                                                      */
+	/* ************************************************************************************************************** */
 
-	$("#offline_bots").html("inaktive Bots ausblenden");
-	$("#tab-1").html("IRC &Uuml;bersicht");
-	$("#tab-2").html("Statistiken");
-});
+	"1 Day": "1 Tag",
+	"1 Week": "1 Woche",
+	"1 Month": "1 Monat",
+	"All": "Alles",
+
+	/* ************************************************************************************************************** */
+	/* OTHERS                                                                                                         */
+	/* ************************************************************************************************************** */
+
+	"Statistics": "Statistiken",
+	"Hide offline Bots": "inaktive Bots ausblenden",
+	"Extended Statistics": "Erweiterte Statistiken",
+	"IRC View": "IRC &Uuml;bersicht",
+	"External Search via xg.bitpir.at": "Externe Suche via xg.bitpir.at",
+	"Files": "Dateien",
+
+	"Connected": "Verbunden",
+	"Disconnected": "Getrennt",
+	"Size Connected": "Gr&ouml;&szlig;e verbunden",
+	"Size Disconnected": "Gr&ouml;&szlig;e getrennt",
+	"Free Queue": "Freie Warteschlange",
+	"Free Slots": "Frei Pl&auml;tze",
+	"Timespan": "Zeitspanne",
+	"Current Speed": "momentane Geschw.",
+	"Max Speed": "maximale Geschw.",
+	"Enabled": "Aktiviert",
+	"Disabled": "Deaktiviert",
+	"Count": "Zähler",
+	"Time": "Zeit"
+};

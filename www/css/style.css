@@ -23,25 +23,17 @@
 //
 */
 
-/* BASICS CORE */
+/* Basics Core */
 
-body
+*, html, body, td, div
 {
-	margin: 0;
-	padding: 0;
-	background: #fafafa;
-	color: #000;
+	font: 13px "Lucida Grande", Verdana, Arial, "Bitstream Vera Sans", sans-serif;
 }
 
-img
+td
 {
+	font-size: 12px;
 	vertical-align: middle;
-	border: none;
-}
-
-a img
-{
-	border: none;
 }
 
 a
@@ -53,13 +45,6 @@ a
 a:hover
 {
 	text-decoration: underline;
-}
-
-*
-{
-	margin: 0;
-	padding: 0;
-	font: 12px "Lucida Grande", Verdana, Arial, "Bitstream Vera Sans", sans-serif;
 }
 
 input, select
@@ -87,12 +72,7 @@ small
 	font-size: 9px;
 }
 
-/* BASICS PAGE */
-
-.icon
-{
-	padding: 0 5px 0 10px;
-}
+/* Basics Page */
 
 .left
 {
@@ -109,6 +89,11 @@ small
 	display: none;
 }
 
+.button
+{
+	cursor: pointer;
+}
+
 .active
 {
 	font-weight: bold;
@@ -117,7 +102,6 @@ small
 .box
 {
 	padding: 8px;
-	font-weight: normal;
 	border-radius: 5px;
 	width: 1000px;
 	margin: 10px auto;
@@ -134,7 +118,7 @@ small
 	background: url(../images/xg_header.png) 10px -50px;
 }
 
-/* SLIDER */
+/* Slider */
 
 #network-slider ul, #network-slider li
 {
@@ -150,50 +134,44 @@ small
 	overflow: hidden;
 }
 
-/* BREADCRUMB */
+/* Status */
+
+#status label
+{
+	font-size: 10px;
+}
+
+#status .main
+{
+	padding: 10px 0 0 0;
+}
+
+#status .data
+{
+	padding: 0 0 5px 20px;
+}
+
+/* Breadcrumb */
 
 #breadCrumb
 {
-	margin: 0 0 10px 0;
-	display: block;
-	height: 26px;
-	padding: 1px 10px 1px 10px;
-}
-
-#breadCrumb ul
-{
-	margin: 0;
-	padding: 0;
 	height: 24px;
-	display: block;
+	padding: 1px 10px 1px 10px;
 }
 
 #breadCrumb ul li
 {
-	display: block;
 	float: left;
-	position: relative;
-	line-height: 24px;
-	margin: 0 5px 0 0;
 	padding: 0 20px 0 0;
-	background: url(../images/breadcrumb_arrow.png) no-repeat 100% 5px;
 }
 
-/* AUTOR */
-
-#authorTag
+#breadCrumb ul li i
 {
-	background: url("../images/tag_52g.png") no-repeat scroll left bottom transparent;
-	height: 65px;
-	left: 0;
-	position: absolute;
-	text-indent: -9999px;
-	top: 0;
-	width: 141px;
-	z-index: 10;
+	font-size: 16px;
+	padding: 0 5px 0 15px;
 }
 
-/* OTHERS / SEARCH */
+/* Boxes */
 
 #ircLink
 {
@@ -205,8 +183,6 @@ small
 
 #searchBox, #menuBox
 {
-	padding: 5px;
-	float: left;
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 5px;
 	margin-bottom: 0;
@@ -214,8 +190,8 @@ small
 
 #searchBox
 {
-	padding: 2px 5px;
-	width: 255px;
+	padding: 0 0 2px 5px;
+	width: 260px;
 	float: right;
 }
 
@@ -225,10 +201,34 @@ small
 	margin-bottom: 3px;
 }
 
-#searchBox .icon
+#menuBox
 {
-	padding: 0;
+	float: left;
+	padding: 2px 12px 6px 6px;
 }
+
+#menuBox a
+{
+	padding: 0 5px 0 10px;
+	float: left;
+}
+
+#menuBox a i
+{
+	color: #babdb6;
+}
+
+#menuBox a:hover i
+{
+	color: #ef2929;
+}
+
+#menuBox a.active i
+{
+	color: #a40000;
+}
+
+/* Search Options */
 
 #searchOptions
 {
@@ -238,7 +238,7 @@ small
 
 #searchOptions > div
 {
-	margin: 0 35px;
+	margin: 0 20px;
 }
 
 #lastMentionedValue, #sizeMinValue, #sizeMaxValue
@@ -246,19 +246,85 @@ small
 	width: 30px;
 }
 
+/* Last Searches */
+
 #lastSearches
 {
 	padding: 20px 0 0 10px;
 	text-align: center;
 }
 
-#lastSearches > div
+#lastSearches div
 {
 	padding: 10px 0;
 }
 
-#lastSearches > span
+#lastSearches a
 {
-	padding: 0 5px;
-	whitespace: nowrap;
+	padding: 0 20px 0 0;
 }
+
+/* Icons */
+
+.icon-big
+{
+	font-size: 22px;
+}
+
+.icon-medium
+{
+	font-size: 18px;
+}
+
+.icon-overlay
+{
+	font-size: 16px;
+	float: right;
+}
+
+.icon-big, .icon-medium, .icon-overlay, i
+{
+	text-shadow: #FFFFFF -2px -2px, #FFFFFF -2px 2px, #FFFFFF 2px -2px, #FFFFFF 2px 2px;
+}
+
+/* Table */
+
+.ui-jqgrid .ui-jqgrid-htable th, .ui-jqgrid tr.jqgrow td
+{
+    height: 18px;
+}
+
+.ui-jqgrid tr.jqgrow td.icon-cell
+{
+	padding: 0 0 0 2px;
+}
+
+/* Tango Colors */
+
+.ButterLight { color: #fce94f; }
+.ButterMiddle { color: #edd400; }
+.ButterDark { color: #c4a000; }
+.OrangeLight { color: #fcaf3e; }
+.OrangeMiddle { color: #f57900; }
+.OrangeDark { color: #ce5c00; }
+.ChocolateLight { color: #e9b96e; }
+.ChocolateMiddle { color: #c17d11; }
+.ChocolateDark { color: #8f5902; }
+.ChameleonLight { color: #8ae234; }
+.ChameleonMiddle { color: #73d216; }
+.ChameleonDark { color: #4e9a06; }
+.SkyBlueLight { color: #729fcf; }
+.SkyBlueMiddle { color: #3465a4; }
+.SkyBlueDark { color: #204a87; }
+.PlumLight { color: #ad7fa8; }
+.PlumMiddle { color: #75507b; }
+.PlumDark { color: #5c3566; }
+.ScarletRedLight { color: #ef2929; }
+.ScarletRedMiddle { color: #cc0000; }
+.ScarletRedDark { color: #a40000; }
+.Aluminium1Light { color: #eeeeec; }
+.Aluminium1Middle { color: #d3d7cf; }
+.Aluminium1Dark { color: #babdb6; }
+.Aluminium2Light { color: #888a85; }
+.Aluminium2Middle { color: #555753; }
+.Aluminium2Dark { color: #2e3436; }

@@ -27,28 +27,28 @@
 
 	<div id="breadCrumb" class="ui-widget-header">
 		<ul>
-			<li id="bread-home" class="button"><img src="images/client.png"/> Home</li>
-			<li id="bread-server" class="button hidden"></li>
-			<li id="bread-channel" class="button hidden"></li>
-			<li id="bread-bot" class="button hidden"></li>
+			<li id="bread-home" class="button icon-right-open"><i class="icon-globe"></i> Home</li>
+			<li id="bread-server" class="button hidden icon-right-open"><i class="icon-book"></i> <label id="bread-server-name" class="button"></label></li>
+			<li id="bread-channel" class="button hidden icon-right-open"><i class="icon-folder"></i> <label id="bread-channel-name" class="button"></label></li>
+			<li id="bread-bot" class="button hidden icon-right-open"><i class="icon-user"></i> <label id="bread-bot-name" class="button"></label></li>
 		</ul>
 	</div>
 
 	<div id="network-slider">
 		<ul>
-			<li>
+			<li id="slider-servers">
 				<table id="servers"></table>
 				<div id="servers-pager"></div>
 			</li>
-			<li>
+			<li id="slider-channels">
 				<table id="channels"></table>
 				<div id="channels-pager"></div>
 			</li>
-			<li>
+			<li id="slider-bots">
 				<table id="bots"></table>
 				<div id="bots-pager"></div>
 			</li>
-			<li>
+			<li id="slider-packets">
 				<table id="packets"></table>
 				<div id="packets-pager"></div>
 			</li>

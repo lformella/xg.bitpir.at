@@ -32,6 +32,7 @@ use XG\Classes\Domain\Model\Packet;
 use XG\Classes\Domain\Model\PacketSearch;
 use XG\Classes\Domain\Model\Server;
 use XG\Classes\Domain\Model\SearchOption;
+use XG\Classes\Domain\Model\Snapshot;
 
 class Service
 {
@@ -49,18 +50,33 @@ class Service
 	}
 
 	/**
+	 * @param Base[] $objects
+	 * @return Base[]
+	 */
+	public function FixObjects (array $objects)
+	{
+		foreach($objects as $object)
+		{
+			$object->Connected = (int)$object->Connected == 1 ? true : false;
+			$object->Enabled = (int)$object->Enabled == 1 ? true : false;
+		}
+		return $objects;
+	}
+
+	/**
 	 * @return Server[]
 	 */
 	public function GetServers ()
 	{
 		$stmt = $this->pdo->prepare("
 			SELECT *, CONCAT('irc://', name, ':', port, '/') AS IrcLink
-			FROM server;
+			FROM servers;
 		");
 		$stmt->execute();
+		/** @var $result Server[] */
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Server');
 
-		return !$result ? array() : $result;
+		return !$result ? array() : $this->FixObjects($result);
 	}
 
 	/**
@@ -72,15 +88,15 @@ class Service
 	{
 		$stmt = $this->pdo->prepare("
 			SELECT c.*, CONCAT('irc://', s.name, ':', s.port, '/', c.name, '/') AS IrcLink
-			FROM channel c
-			INNER JOIN server s ON s.guid = c.parentguid
+			FROM channels c
+			INNER JOIN servers s ON s.guid = c.parentguid
 			WHERE c.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Channel');
 
-		return !$result ? array() : $result;
+		return !$result ? array() : $this->FixObjects($result);
 	}
 
 	/**
@@ -92,16 +108,16 @@ class Service
 	{
 		$stmt = $this->pdo->prepare("
 			SELECT b.*, CONCAT('irc://', s.name, ':', s.port, '/', c.name, '/') AS IrcLink
-			FROM bot b
-			INNER JOIN channel c ON c.guid = b.parentguid
-			INNER JOIN server s ON s.guid = c.parentguid
+			FROM bots b
+			INNER JOIN channels c ON c.guid = b.parentguid
+			INNER JOIN servers s ON s.guid = c.parentguid
 			WHERE b.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Bot');
 
-		return !$result ? array() : $result;
+		return !$result ? array() : $this->FixObjects($result);
 	}
 
 	/**
@@ -113,17 +129,17 @@ class Service
 	{
 		$stmt = $this->pdo->prepare("
 			SELECT p.*, CONCAT('xdcc://', s.name, '/', s.name, '/', c.name, '/', b.name, '/#', p.id, '/', p.name, '/') AS IrcLink
-			FROM packet p
-			INNER JOIN bot b ON b.guid = p.parentguid
-			INNER JOIN channel c ON c.guid = b.parentguid
-			INNER JOIN server s ON s.guid = c.parentguid
+			FROM packets p
+			INNER JOIN bots b ON b.guid = p.parentguid
+			INNER JOIN channels c ON c.guid = b.parentguid
+			INNER JOIN servers s ON s.guid = c.parentguid
 			WHERE p.parentguid = :guid;
 		");
 		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Packet');
 
-		return !$result ? array() : $result;
+		return !$result ? array() : $this->FixObjects($result);
 	}
 
 	/**
@@ -186,10 +202,10 @@ class Service
 
 		$stmt = $this->pdo->prepare("
 			SELECT p.*, CONCAT('xdcc://', s.name, '/', s.name, '/', c.name, '/', b.name, '/#', p.id, '/', p.name, '/') AS IrcLink, b.Name AS BotName, b.InfoSpeedMax AS BotSpeed
-			FROM packet p
-			INNER JOIN bot b ON b.guid = p.parentguid
-			INNER JOIN channel c ON c.guid = b.parentguid
-			INNER JOIN server s ON s.guid = c.parentguid
+			FROM packets p
+			INNER JOIN bots b ON b.guid = p.parentguid
+			INNER JOIN channels c ON c.guid = b.parentguid
+			INNER JOIN servers s ON s.guid = c.parentguid
 			WHERE $str;
 		");
 
@@ -215,7 +231,7 @@ class Service
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\PacketSearch');
 
-		return !$result ? array() : $result;
+		return !$result ? array() : $this->FixObjects($result);
 	}
 
 	/**
@@ -225,7 +241,7 @@ class Service
 	private function AddSearch($search)
 	{
 		$stmt = $this->pdo->prepare("
-			INSERT INTO search (search, lasttime) VALUES (:search, :lasttime) ON DUPLICATE KEY UPDATE count = count + 1, lasttime = :lasttime;
+			INSERT INTO searches (search, lasttime) VALUES (:search, :lasttime) ON DUPLICATE KEY UPDATE count = count + 1, lasttime = :lasttime;
 		");
 
 		$stmt->bindValue(':search', $search, PDO::PARAM_STR);
@@ -241,7 +257,7 @@ class Service
 	 */
 	public function GetSearches($limit)
 	{
-		$stmt = $this->pdo->prepare("SELECT search, count FROM search ORDER BY lasttime DESC, count DESC LIMIT 0, :limit;");
+		$stmt = $this->pdo->prepare("SELECT search, count FROM searches ORDER BY lasttime DESC, count DESC LIMIT 0, :limit;");
 
 		$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 		$stmt->execute();
@@ -254,6 +270,19 @@ class Service
 		}
 
 		return $return;
+	}
+
+	/**
+	 * @return Snapshot
+	 */
+	public function GetLastSnapshot()
+	{
+		$stmt = $this->pdo->prepare("SELECT * FROM snapshots ORDER BY Timestamp DESC LIMIT 0, 1;");
+
+		$stmt->execute();
+		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Snapshot');
+
+		return $result[0];
 	}
 
 	/**

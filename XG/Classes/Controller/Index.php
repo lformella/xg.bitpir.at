@@ -51,29 +51,11 @@ class Index extends Base
 	 */
 	private function indexAction ()
 	{
-		$count = array(0, 0, 0, 0, 0);
-
-		$servers = $this->service->GetServers();
-		foreach ($servers as $server)
-		{
-			if ($server->Connected)
-			{
-				$count[0]++;
-			}
-			else
-			{
-				$count[1]++;
-			}
-
-			$count[2] += $server->ChannelCount;
-			$count[3] += $server->BotCount;
-			$count[4] += $server->PacketCount;
-		}
-
+		$snapshot = $this->service->GetLastSnapshot();
 		$searches = $this->service->GetSearches(50);
 
 		$view = new View();
-		$view->assign('count', $count);
+		$view->assign('snapshot', $snapshot);
 		$view->assign('searches', $searches);
 		$content = $view->loadTemplate('index', __CLASS__);
 

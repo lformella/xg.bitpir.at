@@ -24,14 +24,12 @@ abstract class Base
 	public $Guid;
 	/** @var string */
 	public $ParentGuid;
-	/** @var int */
+	/** @var bool */
 	public $Enabled;
-	/** @var int */
+	/** @var bool */
 	public $Connected;
 	/** @var string */
 	public $Name;
-	/** @var int */
-	public $LastModified;
 	/** @var string */
 	public $IrcLink;
 }

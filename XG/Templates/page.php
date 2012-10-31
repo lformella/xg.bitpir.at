@@ -23,19 +23,23 @@
 //
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="de">
+<!DOCTYPE html>
+<html>
 
-	<head profile="http://gmpg.org/xfn/11">
+	<head>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
 		<title>XG.BITPiR.AT<?php echo $title != "" ? " - $title" : ""; ?></title>
 
-		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?ver=1.1"/>
-		<link rel="stylesheet" type="text/css" media="screen" href="css/flick/jquery-ui.css?ver=1.8.5"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?ver=1.0"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/jquery-ui.css?ver=1.8.5"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css?ver=4.1.1"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/ui.multiselect.css?ver=4.1.1"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/fontello.css?ver=1.0"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?ver=1.2"/>
+
+		<script src="js/json2.min.js" type="text/javascript"></script>
 
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui.min.js" type="text/javascript"></script>
@@ -49,6 +53,8 @@
 
 		<script src="js/jquery.class.js" type="text/javascript"></script>
 
+		<script src="js/i18n/xg.locale-en.js" type="text/javascript"></script>
+		<script src="js/xg.enum.js" type="text/javascript"></script>
 		<script src="js/xg.helper.js" type="text/javascript"></script>
 		<script src="js/xg.formatter.js" type="text/javascript"></script>
 		<script src="js/xg.js" type="text/javascript"></script>
@@ -61,28 +67,25 @@
 			<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
 		</a>
 
-		<div id="authorTag"></div>
-
 		<div id="headerBox" class="box">
 
 			<div id="searchBox">
 				<input id="searchInput2" class="searchInput"/>
-				<img class="icon" src="images/Search.png"/>
+				<i class="icon-big icon-search"></i>
 			</div>
 
 			<div id="menuBox">
-				<a class="left icon <?php echo $view == "index" ? " active" : ""; ?>" href="?show=index">
-					<img class="icon left" src="images/client.png"/> Start
+				<a<?php echo $view == "index" ? " class=\"active\"" : ""; ?> href="?show=index">
+					<i class="icon-big icon-globe"></i> Start
 				</a>
-				<a class="left icon <?php echo $view == "network" ? " active" : ""; ?>" href="?show=network">
-					<img class="icon left" src="images/Server.png"/> Networks
+				<a<?php echo $view == "network" ? " class=\"active\"" : ""; ?> href="?show=network">
+					<i class="icon-big icon-book"></i> Networks
 				</a>
-				<a class="left icon <?php echo $view == "search" ? " active" : ""; ?>" href="?show=search">
-					<img class="icon left" src="images/Search.png"/> Search
+				<a<?php echo $view == "search" ? " class=\"active\"" : ""; ?> href="?show=search">
+					<i class="icon-big icon-search"></i> Search
 				</a>
-				<a class="left icon" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZW786UWCWEJWL"
-				   id="link-donate" target="_blank">
-					<img class="icon left" src="images/Donate.png"/> Donate
+				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZW786UWCWEJWL" id="link-donate" target="_blank">
+					<i class="icon-big icon-money"></i> Donate
 				</a>
 			</div>
 
@@ -93,7 +96,7 @@
 
 		<?php echo $content; ?>
 
-		<div class="ui-widget-content box">Powered by <img src="images/breadcrumb_arrow.png"/><a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v0.9.2</a>
+		<div class="ui-widget-content box">Powered by: <a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v1.0.0</a>
 			<?php
 			$pid = @file_get_contents("/home/lars/xg/pid");
 
@@ -102,13 +105,7 @@
 				exec("LANG=en_US.UTF-8 ps -p " . $pid . "| grep -v PID | cut -d&quot; &quot; -f2", $data);
 				if (sizeof($data) > 1)
 				{
-					echo " <img src=\"images/Overlay/_checked_1.png\" /> ";
-				}
-
-				exec("cat /proc/" . $pid . "/status | grep VmRSS | awk '{print $2}'", $size);
-				if (sizeof($size) == 1)
-				{
-					echo " (<small>" . $size[0] . "<small>) ";
+					echo " <i class=\"icon-ok-circle2 ChameleonDark\"></i> ";
 				}
 			}
 			?>
