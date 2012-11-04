@@ -80,7 +80,9 @@ function SizeToHuman($size)
 		<i class="icon-big icon-gift"></i> <?php echo $snapshot->Packets ?> Packets
 	</p>
 	<p class="data">
-		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo SizeToHuman($snapshot->PacketsSize); ?></label></i>
+		<i class="icon-info-circle SkyBlueDark" title="Overall"><label><?php echo SizeToHuman($snapshot->PacketsSize); ?></label></i>
+		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo SizeToHuman($snapshot->PacketsSizeConnected); ?></label></i>
+		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo SizeToHuman($snapshot->PacketsSizeDisconnected); ?></label></i>
 	</p>
 
 	<div id="lastSearches">

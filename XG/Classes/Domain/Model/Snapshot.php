@@ -47,6 +47,10 @@ class Snapshot
 	/** @var int */
 	public $PacketsDisconnected;
 	/** @var int */
+	public $PacketsDownloading;
+	/** @var int */
+	public $PacketsNotDownloading;
+	/** @var int */
 	public $PacketsSize;
 	/** @var int */
 	public $ChannelsDisabled;
