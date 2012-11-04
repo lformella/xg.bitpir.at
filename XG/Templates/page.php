@@ -69,6 +69,9 @@
 
 		<div id="headerBox" class="box">
 
+			<div id="headerColor" class="box"></div>
+			<img id="headerImage" src="images/xg.png">
+
 			<div id="searchBox">
 				<input id="searchInput2" class="searchInput"/>
 				<i class="icon-big icon-search"></i>

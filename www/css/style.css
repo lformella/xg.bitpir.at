@@ -79,9 +79,10 @@ small
 	float: left;
 }
 
-.clear
+.clear, .box > div.clear
 {
 	clear: both;
+	margin: 0;
 }
 
 .hidden
@@ -105,6 +106,7 @@ small
 	border-radius: 5px;
 	width: 1000px;
 	margin: 10px auto;
+	background-color: rgba(255,255,255, 0.7);
 }
 
 .box > div
@@ -114,8 +116,30 @@ small
 
 #headerBox
 {
+	position:relative;
 	padding-top: 90px;
-	background: url(../images/xg_header.png) 10px -50px;
+	background: none repeat scroll 0 0 transparent;
+	margin-top: 30px;
+}
+
+#headerImage
+{
+	position: absolute;
+	left: 225px;
+	top: -258px;
+	z-index: -1;
+}
+
+#headerColor
+{
+	position: absolute;
+	height: 115px;
+	background-color: #fce94f;
+	z-index: -2;
+	top: 0;
+	left:0;
+	margin: 0 auto;
+	border: 1px solid #c4a000;
 }
 
 /* Slider */
