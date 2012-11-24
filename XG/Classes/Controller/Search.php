@@ -52,6 +52,9 @@ class Search extends Base
 			case 'json':
 				return $this->jsonAction();
 
+			case 'external':
+				return $this->externalAction();
+
 			case 'index':
 			default:
 				return $this->indexAction();
@@ -104,6 +107,33 @@ class Search extends Base
 
 		$view->assign('json', $json);
 		$content = $view->loadTemplate('json', __CLASS__);
+
+		return $content;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function externalAction ()
+	{
+		$searchOption = new SearchOption();
+		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : "";
+
+		$objects = $this->service->SearchPackets($searchOption);
+		foreach ($objects as $object)
+		{
+			$lastMentioned = new \DateTime();
+			$lastMentioned->setTimestamp($object->LastMentioned);
+			$object->LastMentioned = $lastMentioned->format("c");
+
+			$lastUpdated = new \DateTime();
+			$lastUpdated->setTimestamp($object->LastUpdated);
+			$object->LastUpdated = $lastMentioned->format("c");
+		}
+
+		$view = new View();
+		$view->assign('json', $this->service->objectsToArray($objects));
+		$content = $view->loadTemplate('external', __CLASS__);
 
 		return $content;
 	}

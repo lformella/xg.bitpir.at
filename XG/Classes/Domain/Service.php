@@ -329,6 +329,24 @@ class Service
 	}
 
 	/**
+	 * @param Base[] $objects
+	 * @return array
+	 */
+	public function objectsToArray(array $objects)
+	{
+		$array = array();
+		if(count($objects) > 0)
+		{
+			foreach ($objects as $object)
+			{
+				$array[] = $this->object2Array($object);
+			}
+		}
+
+		return $array;
+	}
+
+	/**
 	 * @param Base $object
 	 * @return array
 	 */

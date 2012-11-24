@@ -21,13 +21,13 @@ namespace XG\Classes\Domain\Model;
 class SearchOption
 {
 	/** @var string */
-	public $Name;
+	public $Name = "";
 	/** @var int */
-	public $LastMentioned;
+	public $LastMentioned = 0;
 	/** @var int */
-	public $MinSize;
+	public $MinSize = 0;
 	/** @var int */
-	public $MaxSize;
+	public $MaxSize = 0;
 	/** @var int */
-	public $BotState;
+	public $BotState = 0;
 }
