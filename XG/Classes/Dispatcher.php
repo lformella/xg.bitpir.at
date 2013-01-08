@@ -64,12 +64,12 @@ class Dispatcher
 				break;
 
 			case 'network':
-				$controller = new  Network($this->request, $service);
+				$controller = new Network($this->request, $service);
 				break;
 
 			case 'index':
 			default:
-				$controller = new  Index($this->request, $service);
+				$controller = new Index($this->request, $service);
 				break;
 		}
 
