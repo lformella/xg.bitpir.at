@@ -161,16 +161,12 @@ class Service
 		#sort($strings);
 		$this->AddSearch(implode($strings, ' '));
 
-		$count = 0;
-		$str = '';
+		$str = 'MATCH (p.name) AGAINST ("';
 		foreach ($strings as $string)
 		{
-			if ($str != '')
-			{
-				$str .= ' AND ';
-			}
-			$str .= ' p.name LIKE :string' . $count++ . ' ';
+			$str .= ' +' . substr($this->pdo->quote($string, PDO::PARAM_STR), 1, -1) . '*';
 		}
+		$str .= '" IN BOOLEAN MODE)';
 
 		if($searchOptions->MaxSize > 0)
 		{
@@ -208,12 +204,6 @@ class Service
 			INNER JOIN servers s ON s.guid = c.parentguid
 			WHERE $str;
 		");
-
-		$count = 0;
-		foreach ($strings as $string)
-		{
-			$stmt->bindValue(':string' . $count++, '%' . $string . '%', PDO::PARAM_STR);
-		}
 
 		if($searchOptions->MaxSize > 0)
 		{
