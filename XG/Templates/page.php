@@ -52,6 +52,7 @@
 		<script src="js/jquery.delayedObserver.js" type="text/javascript"></script>
 
 		<script src="js/jquery.class.js" type="text/javascript"></script>
+		<script src="js/moment.min.js" type="text/javascript"></script>
 
 		<script src="js/i18n/xg.locale-en.js" type="text/javascript"></script>
 		<script src="js/xg.enum.js" type="text/javascript"></script>

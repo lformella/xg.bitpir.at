@@ -54,8 +54,8 @@ class Dispatcher
 		/** @var $controller Base */
 		$controller = null;
 
-		$db = new PDO('mysql:host=localhost;dbname=xg', 'xg', 'xg');
-		$service = new Service($db);
+		$elasticaClient = new \Elastica\Client();
+		$service = new Service($elasticaClient);
 
 		switch ($show)
 		{

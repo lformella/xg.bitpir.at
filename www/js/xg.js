@@ -45,7 +45,8 @@ var BaseController = Class.create(
 	 */
 	getRowData: function (grid, guid)
 	{
-		return $.parseJSON($("#" + grid).getRowData(guid).Object);
+		var rowData = $("#" + grid).getRowData(guid);
+		return $.parseJSON(rowData.Object);
 	},
 
 	trackPiwik: function (url, title)
@@ -111,12 +112,12 @@ var NetworkController = Class.create(BaseController,
 			cmTemplate:{fixed:true},
 			colNames:['', '', 'Name', 'Channels', 'Bots', 'Packets'],
 			colModel:[
-				{name:'Object',			index:'Object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
-				{name:'Icon',			index:'Icon',			formatter: function(c, o, r) { return self.formatter.formatServerIcon2(r, r.IrcLink); }, width:38, classes: "icon-cell"},
-				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return self.formatter.formatServerName(r); }, fixed:false},
-				{name:'ChannelCount',	index:'ChannelCount',	formatter: function(c, o, r) { return r.ChannelCount; }, width:60, align:"right"},
-				{name:'BotCount',		index:'BotCount',		formatter: function(c, o, r) { return r.BotCount; }, width:60, align:"right"},
-				{name:'PacketCount',	index:'PacketCount',	formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"}
+				{name:'Object',			index:'object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
+				{name:'Icon',			index:'icon',			formatter: function(c, o, r) { return self.formatter.formatServerIcon2(r, r.ircLink); }, width:38, classes: "icon-cell"},
+				{name:'Name',			index:'name',			formatter: function(c, o, r) { return self.formatter.formatServerName(r); }, fixed:false},
+				{name:'ChannelCount',	index:'channelCount',	formatter: function(c, o, r) { return r.channelCount; }, width:60, align:"right"},
+				{name:'BotCount',		index:'botCount',		formatter: function(c, o, r) { return r.botCount; }, width:60, align:"right"},
+				{name:'PacketCount',	index:'packetCount',	formatter: function(c, o, r) { return r.packetCount; }, width:60, align:"right"}
 			],
 			onSelectRow:function (id)
 			{
@@ -127,7 +128,7 @@ var NetworkController = Class.create(BaseController,
 					if (obj)
 					{
 						$("#channels").clearGridData();
-						$("#channels").setGridParam({url:"index.php?show=network&action=json&do=get_channels_from_server&guid=" + obj.Guid}).trigger("reloadGrid");
+						$("#channels").setGridParam({url:"index.php?show=network&action=json&do=get_channels_from_server&guid=" + obj.guid}).trigger("reloadGrid");
 						networkSlider.goToSlide(2);
 					}
 				}
@@ -153,11 +154,11 @@ var NetworkController = Class.create(BaseController,
 			cmTemplate:{fixed:true},
 			colNames:['', '', 'Name', 'Bots', 'Packets'],
 			colModel:[
-				{name:'Object',			index:'Object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
-				{name:'Icon',			index:'Icon',			formatter: function(c, o, r) { return self.formatter.formatChannelIcon2(r); }, width:38, classes: "icon-cell"},
-				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return self.formatter.formatChannelName(r); }, fixed:false},
-				{name:'BotCount',		index:'BotCount',		formatter: function(c, o, r) { return r.BotCount; }, width:60, align:"right"},
-				{name:'PacketCount',	index:'PacketCount',	formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"}
+				{name:'Object',			index:'object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
+				{name:'Icon',			index:'icon',			formatter: function(c, o, r) { return self.formatter.formatChannelIcon2(r); }, width:38, classes: "icon-cell"},
+				{name:'Name',			index:'name',			formatter: function(c, o, r) { return self.formatter.formatChannelName(r); }, fixed:false},
+				{name:'BotCount',		index:'botCount',		formatter: function(c, o, r) { return r.botCount; }, width:60, align:"right"},
+				{name:'PacketCount',	index:'packetCount',	formatter: function(c, o, r) { return r.packetCount; }, width:60, align:"right"}
 			],
 			onSelectRow:function (id)
 			{
@@ -168,7 +169,7 @@ var NetworkController = Class.create(BaseController,
 					if (obj)
 					{
 						$("#bots").clearGridData();
-						$("#bots").setGridParam({url:"index.php?show=network&action=json&do=get_bots_from_channel&guid=" + obj.Guid}).trigger("reloadGrid");
+						$("#bots").setGridParam({url:"index.php?show=network&action=json&do=get_bots_from_channel&guid=" + obj.guid}).trigger("reloadGrid");
 						networkSlider.goToSlide(3);
 					}
 				}
@@ -195,14 +196,14 @@ var NetworkController = Class.create(BaseController,
 			cmTemplate:{fixed:true},
 			colNames:['', '', 'Name', 'Queue', 'Slots', 'Speed', 'Last Contact', 'Packets'],
 			colModel:[
-				{name:'Object',				index:'Object',				formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
-				{name:'Icon',				index:'Icon',				formatter: function(c, o, r) { return self.formatter.formatBotIcon(r); }, width:38, classes: "icon-cell"},
-				{name:'Name',				index:'Name',				formatter: function(c, o, r) { return self.formatter.formatBotName(r); }, fixed:false},
-				{name:'InfoQueueCurrent',	index:'InfoQueueCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotQueue(r); }, width:80, align:"right"},
-				{name:'InfoSlotCurrent',	index:'InfoSlotCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotSlots(r); }, width:80, align:"right"},
-				{name:'InfoSpeedCurrent',	index:'InfoSpeedCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotSpeed(r); }, width:120, align:"right"},
-				{name:'LastContact',		index:'LastContact',		formatter: function(c, o, r) { return self.helper.timeStampToHuman(r.LastContact); }, width:150, align:"right"},
-				{name:'PacketCount',		index:'PacketCount',		formatter: function(c, o, r) { return r.PacketCount; }, width:60, align:"right"}
+				{name:'Object',				index:'object',				formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
+				{name:'Icon',				index:'icon',				formatter: function(c, o, r) { return self.formatter.formatBotIcon(r); }, width:38, classes: "icon-cell"},
+				{name:'Name',				index:'name',				formatter: function(c, o, r) { return self.formatter.formatBotName(r); }, fixed:false},
+				{name:'InfoQueueCurrent',	index:'infoQueueCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotQueue(r); }, width:80, align:"right"},
+				{name:'InfoSlotCurrent',	index:'infoSlotCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotSlots(r); }, width:80, align:"right"},
+				{name:'InfoSpeedCurrent',	index:'infoSpeedCurrent',	formatter: function(c, o, r) { return self.formatter.formatBotSpeed(r); }, width:120, align:"right"},
+				{name:'LastContact',		index:'lastContact',		formatter: function(c, o, r) { return self.helper.date2Human(r.lastContact); }, width:150, align:"right"},
+				{name:'PacketCount',		index:'packetCount',		formatter: function(c, o, r) { return r.packetCount; }, width:60, align:"right"}
 			],
 			onSelectRow:function (id)
 			{
@@ -213,7 +214,7 @@ var NetworkController = Class.create(BaseController,
 					if (obj)
 					{
 						$("#packets").clearGridData();
-						$("#packets").setGridParam({url:"index.php?show=network&action=json&do=get_packets_from_bot&guid=" + obj.Guid}).trigger("reloadGrid");
+						$("#packets").setGridParam({url:"index.php?show=network&action=json&do=get_packets_from_bot&guid=" + obj.guid}).trigger("reloadGrid");
 						networkSlider.goToSlide(4);
 					}
 				}
@@ -239,12 +240,12 @@ var NetworkController = Class.create(BaseController,
 			cmTemplate:{fixed:true},
 			colNames:['', '', 'Id', 'Name', 'Last Mentioned', 'Size'],
 			colModel:[
-				{name:'Object',			index:'Object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
-				{name:'Icon',			index:'Icon',			formatter: function(c, o, r) { return self.formatter.formatPacketIcon2(r); }, width:38, classes: "icon-cell"},
-				{name:'Id',				index:'Id',				formatter: function(c, o, r) { return self.formatter.formatPacketId(r); }, width:38, align:"right"},
-				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return self.formatter.formatPacketName(r); }, fixed:false},
-				{name:'LastMentioned',	index:'LastMentioned',	formatter: function(c, o, r) { return self.helper.timeStampToHuman(r.LastMentioned); }, width:150, align:"right"},
-				{name:'Size',			index:'Size',			formatter: function(c, o, r) { return self.helper.size2Human(r.Size); }, width:80, align:"right"}
+				{name:'Object',			index:'object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
+				{name:'Icon',			index:'icon',			formatter: function(c, o, r) { return self.formatter.formatPacketIcon2(r); }, width:38, classes: "icon-cell"},
+				{name:'Id',				index:'id',				formatter: function(c, o, r) { return self.formatter.formatPacketId(r); }, width:38, align:"right"},
+				{name:'Name',			index:'name',			formatter: function(c, o, r) { return self.formatter.formatPacketName(r); }, fixed:false},
+				{name:'LastMentioned',	index:'lastMentioned',	formatter: function(c, o, r) { return self.helper.date2Human(r.lastMentioned); }, width:150, align:"right"},
+				{name:'Size',			index:'size',			formatter: function(c, o, r) { return self.helper.size2Human(r.size); }, width:80, align:"right"}
 			],
 			onSelectRow:function (id)
 			{
@@ -254,7 +255,7 @@ var NetworkController = Class.create(BaseController,
 					var obj = self.getRowData("packets", id);
 					if (obj)
 					{
-						$("#ircLink").html(obj.IrcLink);
+						$("#ircLink").html(obj.ircLink);
 					}
 				}
 			},
@@ -293,10 +294,10 @@ var NetworkController = Class.create(BaseController,
 						obj = self.getRowData("servers", self.id_server);
 						if (obj)
 						{
-							$("#ircLink").html(obj.IrcLink);
-							$("#bread-server-name").html(obj.Name);
+							$("#ircLink").html(obj.ircLink);
+							$("#bread-server-name").html(obj.name);
 							$("#bread-server").fadeIn();
-							self.trackPiwik(document.location, document.title + " " + obj.Name);
+							self.trackPiwik(document.location, document.title + " " + obj.name);
 						}
 						$("#bread-channel").fadeOut();
 						$("#bread-bot").fadeOut();
@@ -306,16 +307,16 @@ var NetworkController = Class.create(BaseController,
 						obj = self.getRowData("servers", self.id_server);
 						if (obj)
 						{
-							$("#bread-server-name").html(obj.Name);
+							$("#bread-server-name").html(obj.name);
 							$("#bread-server").fadeIn();
 						}
 						obj = self.getRowData("channels", self.id_channel);
 						if (obj)
 						{
-							$("#ircLink").html(obj.IrcLink);
-							$("#bread-channel-name").html(obj.Name);
+							$("#ircLink").html(obj.ircLink);
+							$("#bread-channel-name").html(obj.name);
 							$("#bread-channel").fadeIn();
-							self.trackPiwik(document.location, document.title + " " + obj.Name);
+							self.trackPiwik(document.location, document.title + " " + obj.name);
 						}
 						$("#bread-bot").fadeOut();
 						break;
@@ -324,22 +325,22 @@ var NetworkController = Class.create(BaseController,
 						obj = self.getRowData("servers", self.id_server);
 						if (obj)
 						{
-							$("#bread-server-name").html(obj.Name);
+							$("#bread-server-name").html(obj.name);
 							$("#bread-server").fadeIn();
 						}
 						obj = self.getRowData("channels", self.id_channel);
 						if (obj)
 						{
-							$("#ircLink").html(obj.IrcLink);
-							$("#bread-channel-name").html(obj.Name);
+							$("#ircLink").html(obj.ircLink);
+							$("#bread-channel-name").html(obj.name);
 							$("#bread-channel").fadeIn();
 						}
 						obj = self.getRowData("bots", self.id_bot);
 						if (obj)
 						{
-							$("#bread-bot-name").html(obj.Name);
+							$("#bread-bot-name").html(obj.name);
 							$("#bread-bot").fadeIn();
-							self.trackPiwik(document.location, document.title + " " + obj.Name);
+							self.trackPiwik(document.location, document.title + " " + obj.name);
 						}
 						break;
 				}
@@ -394,14 +395,14 @@ var SearchController = Class.create(BaseController,
 			cmTemplate:{fixed:true},
 			colNames:['', '', 'Id', 'Name', 'Last Mentioned', 'Size', 'Bot', 'Speed'],
 			colModel:[
-				{name:'Object',			index:'Object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
-				{name:'Connected',		index:'Connected',		formatter: function(c, o, r) { return self.formatter.formatPacketIcon2(r); }, width:38, classes: "icon-cell"},
-				{name:'Id',				index:'Id',				formatter: function(c, o, r) { return self.formatter.formatPacketId(r); }, width:38, align:"right"},
-				{name:'Name',			index:'Name',			formatter: function(c, o, r) { return self.formatter.formatPacketName(r); }, fixed:false},
-				{name:'LastMentioned',	index:'LastMentioned',	formatter: function(c, o, r) { return self.helper.timeStampToHuman(r.LastMentioned); }, width:140, align:"right"},
-				{name:'Size',			index:'Size',			formatter: function(c, o, r) { return self.helper.size2Human(r.Size); }, width:60, align:"right"},
-				{name:'BotName',		index:'BotName',		formatter: function(c, o, r) { return self.formatter.formatPacketBotName(r.BotName); }, width:100},
-				{name:'BotSpeed',		index:'BotSpeed',		formatter: function(c, o, r) { return self.helper.speed2Human(r.BotSpeed); }, width:80, align:"right"}
+				{name:'Object',			index:'object',			formatter: function(c, o, r) { return JSON.stringify(r); }, hidden:true},
+				{name:'Connected',		index:'connected',		formatter: function(c, o, r) { return self.formatter.formatPacketIcon2(r); }, width:38, classes: "icon-cell"},
+				{name:'Id',				index:'id',				formatter: function(c, o, r) { return self.formatter.formatPacketId(r); }, width:38, align:"right"},
+				{name:'Name',			index:'name',			formatter: function(c, o, r) { return self.formatter.formatPacketName(r); }, fixed:false},
+				{name:'LastMentioned',	index:'lastMentioned',	formatter: function(c, o, r) { return self.helper.date2Human(r.lastMentioned); }, width:140, align:"right"},
+				{name:'Size',			index:'size',			formatter: function(c, o, r) { return self.helper.size2Human(r.size); }, width:60, align:"right"},
+				{name:'BotName',		index:'botName',		formatter: function(c, o, r) { return self.formatter.formatPacketBotName(r.botName); }, width:100},
+				{name:'BotSpeed',		index:'botSpeed',		formatter: function(c, o, r) { return self.helper.speed2Human(r.botSpeed); }, width:80, align:"right"}
 			],
 			onSelectRow:function (id)
 			{
@@ -411,7 +412,7 @@ var SearchController = Class.create(BaseController,
 					var obj = self.getRowData("search", id);
 					if (obj)
 					{
-						$("#ircLink").html(obj.IrcLink);
+						$("#ircLink").html(obj.ircLink);
 					}
 				}
 			},
@@ -531,15 +532,15 @@ var MyFormatter = Class.create(XGFormatter,
 	formatServerIcon2: function (server)
 	{
 		var ret = this.formatServerIcon(server);
-		return "<a href='" + server.IrcLink + "' target='_blank'>" + ret + "</a>";
+		return "<a href='" + server.ircLink + "' target='_blank'>" + ret + "</a>";
 	},
 
 	formatServerName: function (server)
 	{
-		var str = server.Name;
-		if (server.ErrorCode != "" && server.ErrorCode != null && server.ErrorCode != 0)
+		var str = server.name;
+		if (server.errorCode != "" && server.errorCode != null && server.errorCode != 0)
 		{
-			str += " - <small>" + server.ErrorCode + "</small>";
+			str += " - <small>" + server.errorCode + "</small>";
 		}
 		return str;
 	},
@@ -551,15 +552,15 @@ var MyFormatter = Class.create(XGFormatter,
 	formatChannelIcon2: function (channel)
 	{
 		var ret = this.formatChannelIcon(channel);
-		return "<a href='" + channel.IrcLink + "' target='_blank'>" + ret + "</a>";
+		return "<a href='" + channel.ircLink + "' target='_blank'>" + ret + "</a>";
 	},
 
 	formatChannelName: function (channel)
 	{
-		var str = channel.Name;
-		if (channel.ErrorCode != "" && channel.ErrorCode != null && channel.ErrorCode != 0)
+		var str = channel.name;
+		if (channel.errorCode != "" && channel.errorCode != null && channel.errorCode != 0)
 		{
-			str += " - <small>" + channel.ErrorCode + "</small>";
+			str += " - <small>" + channel.errorCode + "</small>";
 		}
 		return str;
 	},
@@ -570,10 +571,10 @@ var MyFormatter = Class.create(XGFormatter,
 
 	formatBotName: function (bot)
 	{
-		var ret = bot.Name;
-		if (bot.LastMessage != "")
+		var ret = bot.name;
+		if (bot.lastMessage != "")
 		{
-			ret += "<br /><small><b>" + this.helper.timeStampToHuman(bot.LastContact) + ":</b> " + bot.LastMessage + "</small>";
+			ret += "<br /><small><b>" + this.helper.date2Human(bot.lastContact) + ":</b> " + bot.lastMessage + "</small>";
 		}
 		return ret;
 	},
@@ -585,7 +586,7 @@ var MyFormatter = Class.create(XGFormatter,
 	formatPacketIcon2: function (packet)
 	{
 		var ret = this.formatPacketIcon(packet);
-		return "<a href='" + packet.IrcLink + "' target='_blank'>" + ret + "</a>";
+		return "<a href='" + packet.ircLink + "' target='_blank'>" + ret + "</a>";
 	},
 
 	formatPacketBotName: function (botName)

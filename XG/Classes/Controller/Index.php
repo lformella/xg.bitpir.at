@@ -24,6 +24,7 @@
 
 namespace XG\Classes\Controller;
 
+use XG\Classes\Domain\Model\SearchOption;
 use XG\Classes\Domain\Service;
 use XG\Classes\View;
 
@@ -51,7 +52,15 @@ class Index extends Base
 	 */
 	private function indexAction ()
 	{
-		$snapshot = $this->service->GetLastSnapshot();
+		$searchOption = new SearchOption();
+		$searchOption->Page = 0;
+		$searchOption->Start = 0;
+		$searchOption->Limit = 1;
+		$searchOption->SortBy = "timestamp";
+		$searchOption->SortDesc = true;
+
+		$snapshot = $this->service->GetSnapshots($searchOption);
+		$snapshot = $snapshot[0];
 		$searches = $this->service->GetSearches(50);
 
 		$view = new View();

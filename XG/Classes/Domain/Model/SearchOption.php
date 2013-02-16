@@ -21,13 +21,27 @@ namespace XG\Classes\Domain\Model;
 class SearchOption
 {
 	/** @var string */
-	public $Name = "";
+	public $ParentGuid = null;
+	/** @var string */
+	public $Name = null;
 	/** @var int */
-	public $LastMentioned = 0;
+	public $LastMentioned = null;
 	/** @var int */
-	public $MinSize = 0;
+	public $MinSize = null;
 	/** @var int */
-	public $MaxSize = 0;
+	public $MaxSize = null;
 	/** @var int */
-	public $BotState = 0;
+	public $BotState = null;
+	/** @var int */
+	public $Page = null;
+	/** @var int */
+	public $Start = 0;
+	/** @var int */
+	public $Limit = 20;
+	/** @var string */
+	public $SortBy = "name";
+	/** @var bool */
+	public $SortDesc = false;
+	/** @var int */
+	public $ResultCount = null;
 }

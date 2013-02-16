@@ -24,8 +24,8 @@
 
 namespace XG\Classes\Controller;
 
+use XG\Classes\Domain\Model\SearchOption;
 use XG\Classes\Domain\Service;
-use XG\Classes\Domain\Sorter;
 use XG\Classes\View;
 
 class Network extends Base
@@ -79,28 +79,36 @@ class Network extends Base
 	 */
 	private function jsonAction ()
 	{
+		$searchOption = new SearchOption();
+		$searchOption->ParentGuid = $this->request['guid'];
+		$searchOption->Page = $this->request['page'];
+		$searchOption->Start = ($this->request['page'] - 1) * $this->request['rows'];
+		$searchOption->Limit = $this->request['rows'];
+		$searchOption->SortBy = strtolower(substr($this->request['sidx'], 0, 1)) . substr($this->request['sidx'], 1);
+		$searchOption->SortDesc = $this->request['sord'] == "desc";
+
 		$objects = array();
 
 		switch ($this->request['do'])
 		{
 			case "get_servers" :
-				$objects = $this->service->GetServers();
+				$objects = $this->service->GetServers($searchOption);
 				break;
 
 			case "get_channels_from_server" :
-				$objects = $this->service->GetChannelsFromServer($this->request['guid']);
+				$objects = $this->service->GetChannelsFromServer($searchOption);
 				break;
 
 			case "get_bots_from_channel" :
-				$objects = $this->service->GetBotsFromChannel($this->request['guid']);
+				$objects = $this->service->GetBotsFromChannel($searchOption);
 				break;
 
 			case "get_packets_from_bot" :
-				$objects = $this->service->GetPacketsFromBot($this->request['guid']);
+				$objects = $this->service->GetPacketsFromBot($searchOption);
 				break;
 		}
 
-		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
+		$json = $this->service->buildJsonArray($objects, $searchOption);
 
 		$view = new View();
 		$view->assign('json', $json);

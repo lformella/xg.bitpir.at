@@ -1,6 +1,6 @@
 <?php
 //
-//  json.php
+//  external.php
 //
 //  Author:
 //       Lars Formella <ich@larsformella.de>

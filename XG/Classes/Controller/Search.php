@@ -26,7 +26,6 @@ namespace XG\Classes\Controller;
 
 use XG\Classes\Domain\Model\SearchOption;
 use XG\Classes\Domain\Service;
-use XG\Classes\Domain\Sorter;
 use XG\Classes\View;
 
 class Search extends Base
@@ -83,23 +82,27 @@ class Search extends Base
 	 */
 	private function jsonAction ()
 	{
-		$objects = array();
-
 		$searchOption = new SearchOption();
-		$searchOption->Name = isset($this->request['searchString']) ? $this->request['searchString'] : "";
-		$searchOption->MaxSize = isset($this->request['searchSizeMax']) ? intval($this->request['searchSizeMax']) : 0;
-		$searchOption->MinSize = isset($this->request['searchSizeMin']) ? intval($this->request['searchSizeMin']) : 0;
-		$searchOption->LastMentioned = isset($this->request['searchLastMentioned']) ? intval($this->request['searchLastMentioned']) : 0;
-		$searchOption->BotState = isset($this->request['searchBotState']) ? intval($this->request['searchBotState']) : 0;
-
-		if (strlen($searchOption->Name) >= 3)
+		$searchOption->Name = isset($this->request['searchString']) ? $this->request['searchString'] : null;
+		$searchOption->MaxSize = isset($this->request['searchSizeMax']) ? intval($this->request['searchSizeMax']) : null;
+		if ($searchOption->MaxSize == 0)
 		{
-			$objects = $this->service->SearchPackets($searchOption);
+			$searchOption->MaxSize = null;
 		}
+		$searchOption->MinSize = isset($this->request['searchSizeMin']) ? intval($this->request['searchSizeMin']) : null;
+		$searchOption->LastMentioned = isset($this->request['searchLastMentioned']) ? intval($this->request['searchLastMentioned']) : null;
+		$searchOption->BotState = isset($this->request['searchBotState']) ? intval($this->request['searchBotState']) : null;
+		$searchOption->Page = $this->request['page'];
+		$searchOption->Start = ($this->request['page'] - 1) * $this->request['rows'];
+		$searchOption->Limit = $this->request['rows'];
+		$searchOption->SortBy = strtolower(substr($this->request['sidx'], 0, 1)) . substr($this->request['sidx'], 1);
+		$searchOption->SortDesc = $this->request['sord'] == "desc";
+
+		$objects = $this->service->SearchPackets($searchOption);
 
 		$view = new View();
 
-		$json = $this->service->buildJsonArray($objects, $this->request['sidx'], $this->request['sord'], $this->request['page'], $this->request['rows']);
+		$json = $this->service->buildJsonArray($objects, $searchOption);
 		if(isset($this->request['callback']) && $this->request['callback'] != '')
 		{
 			$view->assign('callback', $this->request['callback']);
@@ -117,22 +120,13 @@ class Search extends Base
 	private function externalAction ()
 	{
 		$searchOption = new SearchOption();
+		$searchOption->Limit = 999999;
 		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : "";
 
 		$objects = $this->service->SearchPackets($searchOption);
-		foreach ($objects as $object)
-		{
-			$lastMentioned = new \DateTime();
-			$lastMentioned->setTimestamp($object->LastMentioned);
-			$object->LastMentioned = $lastMentioned->format("c");
-
-			$lastUpdated = new \DateTime();
-			$lastUpdated->setTimestamp($object->LastUpdated);
-			$object->LastUpdated = $lastMentioned->format("c");
-		}
 
 		$view = new View();
-		$view->assign('json', $this->service->objectsToArray($objects));
+		$view->assign('json', $objects);
 		$content = $view->loadTemplate('external', __CLASS__);
 
 		return $content;

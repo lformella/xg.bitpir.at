@@ -24,333 +24,266 @@
 
 namespace XG\Classes\Domain;
 
-use PDO;
-use XG\Classes\Domain\Model\Base;
-use XG\Classes\Domain\Model\Bot;
-use XG\Classes\Domain\Model\Channel;
-use XG\Classes\Domain\Model\Packet;
-use XG\Classes\Domain\Model\PacketSearch;
-use XG\Classes\Domain\Model\Server;
+use \Elastica\Client;
 use XG\Classes\Domain\Model\SearchOption;
-use XG\Classes\Domain\Model\Snapshot;
 
 class Service
 {
-	/** @var PDO */
-	protected $pdo;
-
 	/**
-	 * @param PDO $pdo
+	 * @param \Elastica\Client $client
 	 *
 	 * @return Service
 	 */
-	public function __construct (PDO $pdo)
+	public function __construct (\Elastica\Client $client)
 	{
-		$this->pdo = $pdo;
+		$this->client = $client;
+		$this->index = $client->getIndex('xg');
 	}
 
 	/**
-	 * @param Base[] $objects
-	 * @return Base[]
+	 * @param string       $type
+	 * @param SearchOption $searchOptions
+	 *
+	 * @return array
 	 */
-	public function FixObjects (array $objects)
+	private function GetObjects ($type, SearchOption $searchOptions)
 	{
-		foreach($objects as $object)
+		$objects = array();
+
+		$query = new \Elastica\Query();
+		$query->setFrom($searchOptions->Start);
+		$query->setLimit($searchOptions->Limit);
+
+		if (!is_null($searchOptions->Name))
 		{
-			$object->Connected = (int)$object->Connected == 1 ? true : false;
-			$object->Enabled = (int)$object->Enabled == 1 ? true : false;
+			$queryBool = new \Elastica\Query\Bool();
+
+			$strings = explode(' ', $searchOptions->Name);
+			foreach ($strings as $string)
+			{
+				$string = trim($string);
+				if ($string != "")
+				{
+					$currentQuery = new \Elastica\Query\Field();
+					$currentQuery->setQueryString("*" . $string . "*");
+					$currentQuery->setField("name");
+
+					$queryBool->addMust($currentQuery);
+				}
+			}
+
+			if($searchOptions->LastMentioned > 0)
+			{
+				$date = new \DateTime();
+				$date->sub(new \DateInterval("PT" . $searchOptions->LastMentioned . "S"));
+				$currentRange = new \Elastica\Query\Range();
+				$currentRange->addField('lastMentioned', array(
+					'gte' => $date->format("c"),
+				));
+				$queryBool->addMust($currentRange);
+			}
+
+			switch($searchOptions->BotState)
+			{
+				case 0:
+					break;
+				case 1:
+					$currentQuery = new \Elastica\Query\Term();
+					$currentQuery->setTerm("botHasFreeSlots", true);
+					$queryBool->addMust($currentQuery);
+					break;
+					break;
+				case 2:
+					$currentQuery = new \Elastica\Query\Term();
+					$currentQuery->setTerm("botHasFreeQueue", true);
+					$queryBool->addMust($currentQuery);
+					break;
+				case 3:
+					$currentQuery = new \Elastica\Query\Term();
+					$currentQuery->setTerm("botConnected", true);
+					$queryBool->addMust($currentQuery);
+					break;
+			}
+
+			$mainQuery = new \Elastica\Query\Filtered(
+				$queryBool,
+				new \Elastica\Filter\Range("size", array(
+					"from" => $searchOptions->MinSize,
+					"to" => $searchOptions->MaxSize,
+				))
+			);
+
+			$query->setQuery($mainQuery);
 		}
+
+		if (!is_null($searchOptions->ParentGuid))
+		{
+			$queryString = new \Elastica\Query\QueryString();
+			$queryString->setQuery($searchOptions->ParentGuid);
+			$queryString->setFields(array("parentGuid"));
+
+			$query->setQuery($queryString);
+		}
+
+		if ($searchOptions->SortBy == "name")
+		{
+			$searchOptions->SortBy = "name.raw";
+		}
+		$query->setSort(array($searchOptions->SortBy => $searchOptions->SortDesc ? "desc" : "asc"));
+
+		$resultSet = $this->index->getType($type)->search($query);
+		$searchOptions->ResultCount = $resultSet->getTotalHits();
+
+		/** @var $results \Elastica\Result[] */
+		$results = $resultSet->getResults();
+		foreach ($results as $result)
+		{
+			$objects[] = $result->getSource();
+		}
+
 		return $objects;
 	}
 
 	/**
-	 * @return Server[]
+	 * @param SearchOption $searchOption
+	 *
+	 * @return array
 	 */
-	public function GetServers ()
+	public function GetServers (SearchOption $searchOption)
 	{
-		$stmt = $this->pdo->prepare("
-			SELECT *, CONCAT('irc://', name, ':', port, '/') AS IrcLink
-			FROM servers;
-		");
-		$stmt->execute();
-		/** @var $result Server[] */
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Server');
-
-		return !$result ? array() : $this->FixObjects($result);
+		$objects = $this->GetObjects("server", $searchOption);
+		return $objects;
 	}
 
 	/**
-	 * @param  string $guid
+	 * @param SearchOption $searchOption
 	 *
-	 * @return Channel[]
+	 * @return array
 	 */
-	public function GetChannelsFromServer ($guid)
+	public function GetChannelsFromServer (SearchOption $searchOption)
 	{
-		$stmt = $this->pdo->prepare("
-			SELECT c.*, CONCAT('irc://', s.name, ':', s.port, '/', c.name, '/') AS IrcLink
-			FROM channels c
-			INNER JOIN servers s ON s.guid = c.parentguid
-			WHERE c.parentguid = :guid;
-		");
-		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Channel');
-
-		return !$result ? array() : $this->FixObjects($result);
+		$objects = $this->GetObjects("channel", $searchOption);
+		return $objects;
 	}
 
 	/**
-	 * @param  string $guid
+	 * @param SearchOption $searchOption
 	 *
-	 * @return Bot[]
+	 * @return array
 	 */
-	public function GetBotsFromChannel ($guid)
+	public function GetBotsFromChannel (SearchOption $searchOption)
 	{
-		$stmt = $this->pdo->prepare("
-			SELECT b.*, CONCAT('irc://', s.name, ':', s.port, '/', c.name, '/') AS IrcLink
-			FROM bots b
-			INNER JOIN channels c ON c.guid = b.parentguid
-			INNER JOIN servers s ON s.guid = c.parentguid
-			WHERE b.parentguid = :guid;
-		");
-		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Bot');
-
-		return !$result ? array() : $this->FixObjects($result);
+		$objects = $this->GetObjects("bot", $searchOption);
+		return $objects;
 	}
 
 	/**
-	 * @param  string $guid
+	 * @param SearchOption $searchOption
 	 *
-	 * @return Packet[]
+	 * @return array
 	 */
-	public function GetPacketsFromBot ($guid)
+	public function GetPacketsFromBot (SearchOption $searchOption)
 	{
-		$stmt = $this->pdo->prepare("
-			SELECT p.*, CONCAT('xdcc://', s.name, '/', s.name, '/', c.name, '/', b.name, '/#', p.id, '/', p.name, '/') AS IrcLink
-			FROM packets p
-			INNER JOIN bots b ON b.guid = p.parentguid
-			INNER JOIN channels c ON c.guid = b.parentguid
-			INNER JOIN servers s ON s.guid = c.parentguid
-			WHERE p.parentguid = :guid;
-		");
-		$stmt->bindValue(':guid', $guid, PDO::PARAM_STR);
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Packet');
-
-		return !$result ? array() : $this->FixObjects($result);
+		$objects = $this->GetObjects("packet", $searchOption);
+		return $objects;
 	}
 
 	/**
-	 * @param  SearchOption $searchOptions
+	 * @param SearchOption $searchOption
 	 *
-	 * @return PacketSearch[]
+	 * @return array
 	 */
-	public function SearchPackets ($searchOptions)
+	public function SearchPackets (SearchOption $searchOption)
 	{
-		$strings = explode(' ', $searchOptions->Name);
-		foreach($strings as $key => $string)
-		{
-			$string = trim($string);
-			if($string == '')
-			{
-				unset($strings[$key]);
-			}
-		}
-		#sort($strings);
-		$this->AddSearch(implode($strings, ' '));
+		$this->AddSearch($searchOption->Name);
 
-		$str = 'MATCH (p.name) AGAINST ("';
-		foreach ($strings as $string)
-		{
-			$str .= ' +' . substr($this->pdo->quote($string, PDO::PARAM_STR), 1, -1) . '*';
-		}
-		$str .= '" IN BOOLEAN MODE)';
-
-		if($searchOptions->MaxSize > 0)
-		{
-			$str .= ' AND p.size < :maxSize ';
-		}
-		if($searchOptions->MinSize > 0)
-		{
-			$str .= ' AND p.size > :minSize ';
-		}
-		if($searchOptions->LastMentioned > 0)
-		{
-			$str .= ' AND p.lastMentioned > :lastMentioned ';
-		}
-
-		switch($searchOptions->BotState)
-		{
-			case 0:
-				break;
-			case 1:
-				$str .= ' AND b.infoSlotCurrent > 0';
-				break;
-			case 2:
-				$str .= ' AND (b.infoSlotCurrent > 0 OR b.infoQueueCurrent > 0)';
-				break;
-			case 3:
-				$str .= ' AND b.Connected == 1';
-				break;
-		}
-
-		$stmt = $this->pdo->prepare("
-			SELECT p.*, CONCAT('xdcc://', s.name, '/', s.name, '/', c.name, '/', b.name, '/#', p.id, '/', p.name, '/') AS IrcLink, b.Name AS BotName, b.InfoSpeedMax AS BotSpeed
-			FROM packets p
-			INNER JOIN bots b ON b.guid = p.parentguid
-			INNER JOIN channels c ON c.guid = b.parentguid
-			INNER JOIN servers s ON s.guid = c.parentguid
-			WHERE $str;
-		");
-
-		if($searchOptions->MaxSize > 0)
-		{
-			$stmt->bindValue(':maxSize', $searchOptions->MaxSize, PDO::PARAM_INT);
-		}
-		if($searchOptions->MinSize > 0)
-		{
-			$stmt->bindValue(':minSize', $searchOptions->MinSize, PDO::PARAM_INT);
-		}
-		if($searchOptions->LastMentioned > 0)
-		{
-			$stmt->bindValue(':lastMentioned', time() - $searchOptions->LastMentioned, PDO::PARAM_INT);
-		}
-
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\PacketSearch');
-
-		return !$result ? array() : $this->FixObjects($result);
+		$objects = $this->GetObjects("packet", $searchOption);
+		return $objects;
 	}
 
 	/**
 	 * @param string $search
+	 *
 	 * @return bool
 	 */
 	private function AddSearch($search)
 	{
-		$stmt = $this->pdo->prepare("
-			INSERT INTO searches (search, lasttime) VALUES (:search, :lasttime) ON DUPLICATE KEY UPDATE count = count + 1, lasttime = :lasttime;
-		");
+		$count = 1;
 
-		$stmt->bindValue(':search', $search, PDO::PARAM_STR);
-		$stmt->bindValue(':lasttime', time(), PDO::PARAM_STR);
-		$result = $stmt->execute();
+		try
+		{
+			$doc = $this->index->getType("search")->getDocument($search);
+			$data = $doc->getData();
+			$count += $data["count"];
+		}
+		catch (\Elastica\Exception\NotFoundException $e) {}
 
-		return $result;
+		$doc = new \Elastica\Document($search, array("search" => $search, "timestamp" => time(), "count" => $count));
+		$this->index->getType("search")->addDocument($doc);
+		$this->index->getType("search")->getIndex()->refresh();
 	}
 
 	/**
 	 * @param int $limit
+	 *
 	 * @return string[]
 	 */
 	public function GetSearches($limit)
 	{
-		$stmt = $this->pdo->prepare("SELECT search, count FROM searches ORDER BY lasttime DESC, count DESC LIMIT 0, :limit;");
+		$searches = array();
 
-		$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$query = new \Elastica\Query();
+		$query->setFrom(0);
+		$query->setLimit($limit);
 
-		$return = array();
-		foreach($result as $row)
+		$query->setSort(array("timestamp" => "desc"));
+
+		$resultSet = $this->index->getType("search")->search($query);
+
+		/** @var $results \Elastica\Result[] */
+		$results = $resultSet->getResults();
+		foreach ($results as $result)
 		{
-			$return[$row['search']] = $row['count'];
+			$search = $result->getSource();
+			$searches[$search["search"]] = $search["count"];
 		}
 
-		return $return;
+		return $searches;
 	}
 
 	/**
-	 * @return Snapshot
+	 * @param  SearchOption $searchOptions
+	 * @return int[]
 	 */
-	public function GetLastSnapshot()
+	public function GetSnapshots($searchOptions)
 	{
-		$stmt = $this->pdo->prepare("SELECT * FROM snapshots ORDER BY Timestamp DESC LIMIT 0, 1;");
-
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_CLASS, 'XG\Classes\Domain\Model\Snapshot');
-
-		return $result[0];
+		$objects = $this->GetObjects("snapshot", $searchOptions);
+		return $objects;
 	}
 
 	/**
-	 * @param Base[] $objects
-	 * @param int $sidx
-	 * @param string $sord
-	 * @param int $page
-	 * @param int $rows
+	 * @param array[]      $objects
+	 * @param SearchOption $searchOption
+	 *
 	 * @return array
 	 */
-	public function buildJsonArray(array $objects, $sidx, $sord, $page, $rows)
+	public function buildJsonArray(array $objects, SearchOption $searchOption)
 	{
-		$start = ($page - 1) * $rows;
-		$end = $start + $rows;
-
 		$json_objects = array();
-		if(count($objects) > 0)
+		foreach ($objects as $object)
 		{
-			$sort = new Sorter();
-			$sort->Sort($objects, $sidx, $sord == "desc");
-
-			$i = 0;
-			foreach ($objects as $object)
-			{
-				if ($i >= $start && $i < $end)
-				{
-					$arr = array();
-					$arr['id'] = $object->Guid;
-					$arr['cell'] = $this->object2Array($object);
-					$json_objects[] = $arr;
-				}
-				$i++;
-			}
+			$arr = array();
+			$arr['id'] = $object["guid"];
+			$arr['cell'] = $object;
+			$json_objects[] = $arr;
 		}
 
-		$objectsCount = sizeof($objects);
 		$json = array();
-		$json['page'] = $page;
-		$json['total'] = ceil($objectsCount / $rows);
-		$json['records'] = $objectsCount;
+		$json['page'] = $searchOption->Page;
+		$json['total'] = ceil($searchOption->ResultCount / $searchOption->Limit);
+		$json['records'] = $searchOption->ResultCount;
 		$json['rows'] = $json_objects;
 
 		return $json;
-	}
-
-	/**
-	 * @param Base[] $objects
-	 * @return array
-	 */
-	public function objectsToArray(array $objects)
-	{
-		$array = array();
-		if(count($objects) > 0)
-		{
-			foreach ($objects as $object)
-			{
-				$array[] = $this->object2Array($object);
-			}
-		}
-
-		return $array;
-	}
-
-	/**
-	 * @param Base $object
-	 * @return array
-	 */
-	private function object2Array($object)
-	{
-		$return = array();
-		$reflect = new \ReflectionClass($object);
-		$props = $reflect->getProperties();
-		foreach ($props as $prop)
-		{
-			$name = $prop->getName();
-			$value = $object->$name;
-			$return[$name] = !is_null($value) ? $value : "";
-		}
-		return $return;
 	}
 }

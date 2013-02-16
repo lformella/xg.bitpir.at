@@ -40,16 +40,16 @@ var XGFormatter = Class.create(
 		var overlayClass = "";
 		var overlayStyle = "opacity: 0.6";
 
-		if (!server.Enabled)
+		if (!server.enabled)
 		{
 			iconClass = "Aluminium1Dark";
 		}
-		else if (server.Connected)
+		else if (server.connected)
 		{
 			overlay = "ok-circle2";
 			overlayClass = "ChameleonMiddle";
 		}
-		else if (server.ErrorCode != "" && server.ErrorCode != "None" && server.ErrorCode != "0")
+		else if (server.errorCode != "" && server.errorCode != "None" && server.errorCode != "0")
 		{
 			overlay = "attention";
 			overlayClass = "ScarletRedMiddle";
@@ -66,16 +66,16 @@ var XGFormatter = Class.create(
 		var overlayClass = "";
 		var overlayStyle = "opacity: 0.6";
 
-		if (!channel.Enabled)
+		if (!channel.enabled)
 		{
 			iconClass = "Aluminium1Dark";
 		}
-		else if (channel.Connected)
+		else if (channel.connected)
 		{
 			overlay = "ok-circle2";
 			overlayClass = "ChameleonMiddle";
 		}
-		else if (channel.ErrorCode != "" && channel.ErrorCode != "None" && channel.ErrorCode != "0")
+		else if (channel.errorCode != "" && channel.errorCode != "None" && channel.errorCode != "0")
 		{
 			overlay = "attention";
 			overlayClass = "ScarletRedMiddle";
@@ -130,22 +130,22 @@ var XGFormatter = Class.create(
 		var overlayClass = "";
 		var overlayStyle = "";
 
-		if (!bot.Connected)
+		if (!bot.connected)
 		{
 			iconClass = "Aluminium1Dark";
 		}
 		else
 		{
-			switch (bot.State)
+			switch (bot.state)
 			{
 				case 0:
-					if (bot.InfoSlotCurrent > 0)
+					if (bot.infoSlotCurrent > 0)
 					{
 						overlay = "ok-circle2";
 						overlayClass = "ChameleonMiddle";
 						overlayStyle = "opacity: 0.6";
 					}
-					else if (bot.InfoSlotCurrent == 0 && bot.InfoSlotCurrent)
+					else if (bot.infoSlotCurrent == 0 && bot.infoSlotCurrent)
 					{
 						overlay = "cancel-circle2";
 						overlayClass = "OrangeMiddle";
@@ -156,7 +156,7 @@ var XGFormatter = Class.create(
 					iconClass = "SkyBlueDark";
 					overlay = "down-circle2";
 					overlayClass = "SkyBlueMiddle";
-					overlayStyle = "opacity: " + this.speed2Overlay(bot.Speed);
+					overlayStyle = "opacity: " + this.speed2Overlay(bot.speed);
 					break;
 
 				case 2:
@@ -171,10 +171,10 @@ var XGFormatter = Class.create(
 
 	formatBotName: function (bot)
 	{
-		var ret = bot.Name;
-		if (bot.LastMessage != "")
+		var ret = bot.name;
+		if (bot.lastMessage != "")
 		{
-			ret += "<br /><small><b>" + bot.LastContact + ":</b> " + bot.LastMessage + "</small>";
+			ret += "<br /><small><b>" + bot.lastContact + ":</b> " + bot.lastMessage + "</small>";
 		}
 		return ret;
 	},
@@ -182,17 +182,17 @@ var XGFormatter = Class.create(
 	formatBotSpeed: function (bot)
 	{
 		var ret = "";
-		if (bot.InfoSpeedCurrent > 0)
+		if (bot.infoSpeedCurrent > 0)
 		{
-			ret += this.helper.speed2Human(bot.InfoSpeedCurrent);
+			ret += this.helper.speed2Human(bot.infoSpeedCurrent);
 		}
-		if (bot.InfoSpeedCurrent > 0 && bot.InfoSpeedMax > 0)
+		if (bot.infoSpeedCurrent > 0 && bot.infoSpeedMax > 0)
 		{
 			ret += " / ";
 		}
-		if (bot.InfoSpeedMax > 0)
+		if (bot.infoSpeedMax > 0)
 		{
-			ret += this.helper.speed2Human(bot.InfoSpeedMax);
+			ret += this.helper.speed2Human(bot.infoSpeedMax);
 		}
 		return ret;
 	},
@@ -200,18 +200,18 @@ var XGFormatter = Class.create(
 	formatBotSlots: function (bot)
 	{
 		var ret = "";
-		ret += bot.InfoSlotCurrent;
+		ret += bot.infoSlotCurrent;
 		ret += " / ";
-		ret += bot.InfoSlotTotal;
+		ret += bot.infoSlotTotal;
 		return ret;
 	},
 
 	formatBotQueue: function (bot)
 	{
 		var ret = "";
-		ret += bot.InfoQueueCurrent;
+		ret += bot.infoQueueCurrent;
 		ret += " / ";
-		ret += bot.InfoQueueTotal;
+		ret += bot.infoQueueTotal;
 		return ret;
 	},
 
@@ -227,20 +227,20 @@ var XGFormatter = Class.create(
 		var overlayClass = "";
 		var overlayStyle = "";
 
-		if (!packet.Enabled)
+		if (!packet.enabled)
 		{
 			iconClass = "Aluminium1Dark";
 		}
 		else if (!skipOverlay)
 		{
-			if (packet.Connected)
+			if (packet.connected)
 			{
 				iconClass = "SkyBlueDark";
 				overlay = "down-circle2";
 				overlayClass = "SkyBlueMiddle";
-				overlayStyle = "opacity: " + this.speed2Overlay(packet.Part != null ? packet.Part.Speed : 0);
+				overlayStyle = "opacity: " + this.speed2Overlay(packet.part != null ? packet.part.speed : 0);
 			}
-			else if (packet.Next)
+			else if (packet.next)
 			{
 				overlay = "clock";
 				overlayClass = "OrangeMiddle";
@@ -257,12 +257,12 @@ var XGFormatter = Class.create(
 
 	formatPacketId: function (packet)
 	{
-		return "#" + packet.Id;
+		return "#" + packet.id;
 	},
 
 	formatPacketName: function (packet)
 	{
-		var name = packet.RealName != undefined && packet.RealName != "" ? packet.RealName : packet.Name;
+		var name = packet.name;
 
 		if (name == undefined)
 		{
@@ -288,112 +288,22 @@ var XGFormatter = Class.create(
 		}
 		ret += this.formatIcon(icon, iconClass) + "&nbsp;&nbsp;" + name;
 
-		if (packet.Connected && packet.Part != null)
-		{
-			ret += "<br />";
-
-			var a = ((packet.Part.StartSize) / packet.RealSize).toFixed(2) * 100;
-			var b = ((packet.Part.CurrentSize - packet.Part.StartSize) / packet.RealSize).toFixed(2) * 100;
-			var c = ((packet.Part.StopSize - packet.Part.CurrentSize) / packet.RealSize).toFixed(2) * 100;
-			if (a + b + c > 100)
-			{
-				c = 100 - a - b;
-			}
-			// Enum.TangoColor.SkyBlue.Middle
-			ret += "<div role='progressbar' class='ui-progressbar ui-widget ui-corner-all' style='height:2px'>" +
-				"<div style='width: " + a + "%;float:left' class='ui-progressbar-value ui-corner-left'></div>" +
-				"<div style='width: " + b + "%;float:left;background:#" + (packet.Part.Checked ? Enum.TangoColor.SkyBlue.Dark : Enum.TangoColor.Plum.Dark) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
-				"<div style='width: " + c + "%;float:left;background:#" + (packet.Part.Checked ? Enum.TangoColor.SkyBlue.Light : Enum.TangoColor.Plum.Light) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>" +
-				"</div><div class='clear'></div>";
-		}
-
 		return ret;
 	},
 
 	formatPacketSpeed: function (packet)
 	{
-		return this.helper.speed2Human(packet.Part != null ? packet.Part.Speed : 0);
+		return this.helper.speed2Human(packet.part != null ? packet.part.speed : 0);
 	},
 
 	formatPacketSize: function (packet)
 	{
-		return this.helper.size2Human(packet.RealSize > 0 ? packet.RealSize : packet.Size);
+		return this.helper.size2Human(packet.size);
 	},
 
 	formatPacketTimeMissing: function (packet)
 	{
-		return this.helper.time2Human(packet.Part != null ? packet.Part.TimeMissing : 0);
-	},
-
-	/* ************************************************************************************************************** */
-	/* FILE FORMATER                                                                                                  */
-	/* ************************************************************************************************************** */
-
-	formatFileIcon: function (file)
-	{
-		var icon = "doc";
-		var iconClass = "Aluminium2Middle";
-
-		var ext = file.Name.toLowerCase().substr(-3);
-		if (ext == "avi" || ext == "wmv" || ext == "mkv" || ext == "mpg")
-		{
-			icon = "video-1";
-		}
-		else if (ext == "mp3")
-		{
-			icon = "headphones";
-		}
-		else if (ext == "rar" || ext == "tar" || ext == "zip")
-		{
-			icon = "th";
-		}
-
-		return this.formatIcon2(icon, iconClass);
-	},
-
-	formatFileName: function (file)
-	{
-		var ret = file.Name;
-
-		ret += "<br /><div role='progressbar' class='ui-progressbar ui-widget ui-corner-all' style='height:4px'>";
-
-		$.each(file.Parts, function (i, part)
-		{
-			var b = ((part.CurrentSize - part.StartSize) / file.Size).toFixed(2) * 100;
-			var c = ((part.StopSize - part.CurrentSize) / file.Size).toFixed(2) * 100;
-
-			ret += "<div style='width: " + b + "%;float:left;background:#" + (part.Checked ? Enum.TangoColor.SkyBlue.Dark : Enum.TangoColor.Plum.Dark) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>";
-			ret += "<div style='width: " + c + "%;float:left;background:#" + (part.Checked ? Enum.TangoColor.SkyBlue.Light : Enum.TangoColor.Plum.Light) + "' class='ui-progressbar-value ui-corner-left ui-widget-header'></div>";
-		});
-
-		ret += "</div><div class='clear'></div>";
-
-		return ret;
-	},
-
-	formatFileSpeed: function (file)
-	{
-		var speed = 0;
-		$.each(file.Parts, function (i, part)
-		{
-			speed += part.Speed;
-		});
-		return this.helper.speed2Human(speed);
-	},
-
-	formatFileSize: function (file)
-	{
-		return this.helper.size2Human(file.Size);
-	},
-
-	formatFileTimeMissing: function (file)
-	{
-		var time = 0;
-		$.each(file.Parts, function (i, part)
-		{
-			time = time == 0 ? part.TimeMissing : (time < part.TimeMissing ? time : part.TimeMissing);
-		});
-		return this.helper.time2Human(time);
+		return this.helper.time2Human(packet.part != null ? packet.part.timeMissing : 0);
 	},
 
 	/* ************************************************************************************************************** */

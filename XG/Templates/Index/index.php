@@ -22,8 +22,6 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-/** @var $snapshot XG\Classes\Domain\Model\Snapshot */
-
 function SizeToHuman($size)
 {
 	if ($size == 0)
@@ -56,33 +54,33 @@ function SizeToHuman($size)
 		Live searching in:
 	</p>
 	<p class="main">
-		<i class="icon-big icon-book"></i> <?php echo $snapshot->Servers; ?> Servers
+		<i class="icon-big icon-book"></i> <?php echo $snapshot["servers"]; ?> Servers
 	</p>
 	<p class="data">
-		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot->ServersConnected; ?></label></i>
-		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot->ServersDisconnected; ?></label></i>
+		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot["serversConnected"]; ?></label></i>
+		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot["serversDisconnected"]; ?></label></i>
 	</p>
 	<p class="main">
-		<i class="icon-big icon-folder"></i> <?php echo $snapshot->Channels ?> Channels
+		<i class="icon-big icon-folder"></i> <?php echo $snapshot["channels"] ?> Channels
 	</p>
 	<p class="data">
-		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot->ChannelsConnected; ?></label></i>
-		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot->ChannelsDisconnected; ?></label></i>
+		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot["channelsConnected"]; ?></label></i>
+		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot["channelsDisconnected"]; ?></label></i>
 	</p>
 	<p class="main">
-		<i class="icon-big icon-user"></i> <?php echo $snapshot->Bots ?> Bots
+		<i class="icon-big icon-user"></i> <?php echo $snapshot["bots"] ?> Bots
 	</p>
 	<p class="data">
-		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot->BotsConnected; ?></label></i>
-		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot->BotsDisconnected; ?></label></i>
+		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo $snapshot["botsConnected"]; ?></label></i>
+		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo $snapshot["botsDisconnected"]; ?></label></i>
 	</p>
 	<p class="main">
-		<i class="icon-big icon-gift"></i> <?php echo $snapshot->Packets ?> Packets
+		<i class="icon-big icon-gift"></i> <?php echo $snapshot["packets"] ?> Packets
 	</p>
 	<p class="data">
-		<i class="icon-info-circle SkyBlueDark" title="Overall"><label><?php echo SizeToHuman($snapshot->PacketsSize); ?></label></i>
-		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo SizeToHuman($snapshot->PacketsSizeConnected); ?></label></i>
-		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo SizeToHuman($snapshot->PacketsSizeDisconnected); ?></label></i>
+		<i class="icon-info-circle SkyBlueDark" title="Overall"><label><?php echo SizeToHuman($snapshot["packetsSize"]); ?></label></i>
+		<i class="icon-ok-circle2 ChameleonDark" title="Connected"><label><?php echo SizeToHuman($snapshot["packetsSizeConnected"]); ?></label></i>
+		<i class="icon-cancel-circle2 ScarletRedMiddle" title="Disconnected"><label><?php echo SizeToHuman($snapshot["packetsSizeDisconnected"]); ?></label></i>
 	</p>
 
 	<div id="lastSearches">
