@@ -120,7 +120,7 @@ class Search extends Base
 	private function externalAction ()
 	{
 		$searchOption = new SearchOption();
-		$searchOption->Limit = 999999;
+		$searchOption->Limit = 999;
 		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : "";
 
 		$externals = array();
