@@ -123,10 +123,22 @@ class Search extends Base
 		$searchOption->Limit = 999999;
 		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : "";
 
+		$externals = array();
+
 		$objects = $this->service->SearchPackets($searchOption);
+		foreach ($objects as &$object)
+		{
+			$external = array();
+			foreach ($object as $k => $v)
+			{
+				$k = strtoupper(substr($k, 0, 1)) . substr($k, 1);
+				$external[$k] = $v;
+			}
+			$externals[] = $external;
+		}
 
 		$view = new View();
-		$view->assign('json', $objects);
+		$view->assign('json', $externals);
 		$content = $view->loadTemplate('external', __CLASS__);
 
 		return $content;
