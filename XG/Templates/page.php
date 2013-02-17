@@ -113,7 +113,7 @@
 				}
 			}
 			?>
-			using XG.Server.Backend.MySql
+			using ElasticSearch
 		</div>
 
 		<!-- Piwik -->
