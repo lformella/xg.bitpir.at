@@ -118,7 +118,7 @@
 
 		<!-- Piwik -->
 		<script type="text/javascript">
-			var pkBaseURL = (("https:" == document.location.protocol) ? "http://piwik.bitpir.at/" : "http://piwik.bitpir.at/");
+			var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.bitpir.at/" : "http://piwik.bitpir.at/");
 			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 		</script>
 		<script type="text/javascript">
@@ -132,7 +132,7 @@
 			{
 			}
 		</script>
-		<noscript><p><img src="http://52g.de/piwik/piwik.php?idsite=5" style="border:0" alt=""/></p></noscript>
+		<noscript><p><img src="http://piwik.bitpir.at/piwik/piwik.php?idsite=5" style="border:0" alt=""/></p></noscript>
 		<!-- End Piwik Tracking Code -->
 
 	</body>
