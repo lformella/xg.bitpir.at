@@ -105,6 +105,26 @@ class Search extends Base
 		$json = $this->service->buildJsonArray($objects, $searchOption);
 		if(isset($this->request['callback']) && $this->request['callback'] != '')
 		{
+			// this is used by old xg versions only, so help em and fix the broken layouts
+			foreach ($json['rows'] as $key => $row)
+			{
+				$newCell = array();
+				$cell = $row['cell'];
+				foreach ($cell as $name => $value)
+				{
+					$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
+					$newCell[$name] = $value;
+				}
+				$dateStr = preg_replace("/\.[0-9]+\+/", "+", $newCell['LastMentioned']);
+				$date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $dateStr);
+				if (is_object($date))
+				{
+					$newCell['LastMentioned'] = $date->format('U');
+				}
+				$row['cell'] = $newCell;
+				$json['rows'][$key] = $row;
+			}
+
 			$view->assign('callback', $this->request['callback']);
 		}
 

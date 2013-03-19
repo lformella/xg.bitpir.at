@@ -483,7 +483,7 @@ var SearchController = Class.create(BaseController,
 		$("#searchInput").val(value);
 		$("#searchInput2").val(value);
 
-		var searchUrl = "index.php?show=search&action=json&do=search_packets&searchString=" + value;
+		var searchUrl = "index.php?show=search&action=json&searchString=" + value;
 
 		if($('#lastMentionedValue').val() != '')
 		{
