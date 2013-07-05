@@ -31,7 +31,7 @@ use XG\Classes\View;
 class Network extends Base
 {
 	/**
-	 * @param array $request
+	 * @param array   $request
 	 * @param Service $service
 	 */
 	public function __construct (array $request, Service $service)
@@ -85,25 +85,25 @@ class Network extends Base
 		$searchOption->Start = ($this->request['page'] - 1) * $this->request['rows'];
 		$searchOption->Limit = $this->request['rows'];
 		$searchOption->SortBy = strtolower(substr($this->request['sidx'], 0, 1)) . substr($this->request['sidx'], 1);
-		$searchOption->SortDesc = $this->request['sord'] == "desc";
+		$searchOption->SortDesc = $this->request['sord'] == 'desc';
 
 		$objects = array();
 
 		switch ($this->request['do'])
 		{
-			case "get_servers" :
+			case 'get_servers' :
 				$objects = $this->service->GetServers($searchOption);
 				break;
 
-			case "get_channels_from_server" :
+			case 'get_channels_from_server' :
 				$objects = $this->service->GetChannelsFromServer($searchOption);
 				break;
 
-			case "get_bots_from_channel" :
+			case 'get_bots_from_channel' :
 				$objects = $this->service->GetBotsFromChannel($searchOption);
 				break;
 
-			case "get_packets_from_bot" :
+			case 'get_packets_from_bot' :
 				$objects = $this->service->GetPacketsFromBot($searchOption);
 				break;
 		}

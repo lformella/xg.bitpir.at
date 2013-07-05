@@ -31,7 +31,7 @@ use XG\Classes\View;
 class Search extends Base
 {
 	/**
-	 * @param array $request
+	 * @param array   $request
 	 * @param Service $service
 	 */
 	public function __construct (array $request, Service $service)
@@ -96,14 +96,14 @@ class Search extends Base
 		$searchOption->Start = ($this->request['page'] - 1) * $this->request['rows'];
 		$searchOption->Limit = $this->request['rows'];
 		$searchOption->SortBy = strtolower(substr($this->request['sidx'], 0, 1)) . substr($this->request['sidx'], 1);
-		$searchOption->SortDesc = $this->request['sord'] == "desc";
+		$searchOption->SortDesc = $this->request['sord'] == 'desc';
 
 		$objects = $this->service->SearchPackets($searchOption);
 
 		$view = new View();
 
 		$json = $this->service->buildJsonArray($objects, $searchOption);
-		if(isset($this->request['callback']) && $this->request['callback'] != '')
+		if (isset($this->request['callback']) && $this->request['callback'] != '')
 		{
 			// this is used by old xg versions only, so help em and fix the broken layouts
 			foreach ($json['rows'] as $key => $row)
@@ -115,7 +115,7 @@ class Search extends Base
 					$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
 					$newCell[$name] = $value;
 				}
-				$dateStr = preg_replace("/\.[0-9]+\+/", "+", $newCell['LastMentioned']);
+				$dateStr = preg_replace('/\.[0-9]+\+/', '+', $newCell['LastMentioned']);
 				$date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $dateStr);
 				if (is_object($date))
 				{
@@ -142,7 +142,7 @@ class Search extends Base
 		$searchOption = new SearchOption();
 		$searchOption->Start = $this->request['start'];
 		$searchOption->Limit = $this->request['limit'];
-		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : "";
+		$searchOption->Name = isset($this->request['search']) ? $this->request['search'] : '';
 
 		$externals = array();
 

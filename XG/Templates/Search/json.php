@@ -24,9 +24,9 @@
 
 $echo = json_encode($json);
 
-if(isset($callback) && $callback != '')
+if (isset($callback) && $callback != '')
 {
-	$echo = $callback.'('.$echo.');';
+	$echo = $callback . '(' . $echo . ');';
 }
 
 echo $echo;

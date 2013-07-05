@@ -31,7 +31,7 @@ class View
 
 	/**
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function assign ($key, $value)
 	{
@@ -41,11 +41,12 @@ class View
 	/**
 	 * @param string $template
 	 * @param string $controller
+	 *
 	 * @return string
 	 */
 	public function loadTemplate ($template, $controller = '')
 	{
-		if($controller != '')
+		if ($controller != '')
 		{
 			$names = explode('\\', $controller);
 			$controller = '/' . array_pop($names);

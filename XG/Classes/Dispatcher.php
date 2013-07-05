@@ -24,7 +24,7 @@
 
 namespace XG\Classes;
 
-use PDO;
+use Elastica\Client;
 use XG\Classes\Controller\Base;
 use XG\Classes\Controller\Index;
 use XG\Classes\Controller\Network;
@@ -54,7 +54,7 @@ class Dispatcher
 		/** @var $controller Base */
 		$controller = null;
 
-		$elasticaClient = new \Elastica\Client();
+		$elasticaClient = new Client();
 		$service = new Service($elasticaClient);
 
 		switch ($show)

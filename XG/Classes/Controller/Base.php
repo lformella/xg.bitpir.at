@@ -34,7 +34,7 @@ abstract class Base
 	protected $service = null;
 
 	/**
-	 * @param array $request
+	 * @param array   $request
 	 * @param Service $service
 	 */
 	public function __construct (array $request, Service $service)

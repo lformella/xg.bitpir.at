@@ -30,7 +30,7 @@
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-		<title>XG.BITPiR.AT<?php echo $title != "" ? " - $title" : ""; ?></title>
+		<title>XG.BITPiR.AT<?php echo $title != '' ? ' - $title' : ''; ?></title>
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?ver=1.0"/>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/jquery-ui.css?ver=1.8.5"/>
@@ -74,23 +74,18 @@
 			<img id="headerImage" src="images/xg.png">
 
 			<div id="searchBox">
-				<input id="searchInput2" class="searchInput"/>
-				<i class="icon-big icon-search"></i>
+				<input id="searchInput2" class="searchInput"/> <i class="icon-big icon-search"></i>
 			</div>
 
 			<div id="menuBox">
-				<a<?php echo $view == "index" ? " class=\"active\"" : ""; ?> href="?show=index">
-					<i class="icon-big icon-globe"></i> Start
-				</a>
-				<a<?php echo $view == "network" ? " class=\"active\"" : ""; ?> href="?show=network">
-					<i class="icon-big icon-book"></i> Networks
-				</a>
-				<a<?php echo $view == "search" ? " class=\"active\"" : ""; ?> href="?show=search">
-					<i class="icon-big icon-search"></i> Search
-				</a>
+				<a<?php echo $view == 'index' ? ' class="active"' : ''; ?> href="?show=index">
+					<i class="icon-big icon-globe"></i> Start </a>
+				<a<?php echo $view == 'network' ? ' class="active"' : ''; ?> href="?show=network">
+					<i class="icon-big icon-book"></i> Networks </a>
+				<a<?php echo $view == 'search' ? ' class="active"' : ''; ?> href="?show=search">
+					<i class="icon-big icon-search"></i> Search </a>
 				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZW786UWCWEJWL" id="link-donate" target="_blank">
-					<i class="icon-big icon-money"></i> Donate
-				</a>
+					<i class="icon-big icon-money"></i> Donate </a>
 			</div>
 
 			<div class="clear"></div>
@@ -100,23 +95,23 @@
 
 		<?php echo $content; ?>
 
-		<div class="ui-widget-content box">Powered by: <a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v1.0.0</a>
+		<div class="ui-widget-content box">Powered by:
+			<a href="https://github.com/lformella/xdcc-grabscher" target="_blank">XG v2.0.0</a>
 			<?php
-			$pid = @file_get_contents("/home/lars/xg/pid");
+			$pid = @file_get_contents('/home/lars/xg/pid');
 
 			if ($pid != "")
 			{
-				exec("LANG=en_US.UTF-8 ps -p " . $pid . "| grep -v PID | cut -d&quot; &quot; -f2", $data);
+				exec('LANG=en_US.UTF-8 ps -p ' . $pid . '| grep -v PID | cut -d&quot; &quot; -f2', $data);
 				if (sizeof($data) > 1)
 				{
-					echo " <i class=\"icon-ok-circle2 ChameleonDark\"></i> ";
+					echo ' <i class="icon-ok-circle2 ChameleonDark"></i> ';
 				}
 			}
 			?>
 			using ElasticSearch
 		</div>
 
-		<!-- Piwik -->
 		<script type="text/javascript">
 			var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.bitpir.at/" : "http://piwik.bitpir.at/");
 			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
@@ -133,7 +128,6 @@
 			}
 		</script>
 		<noscript><p><img src="http://piwik.bitpir.at/piwik/piwik.php?idsite=5" style="border:0" alt=""/></p></noscript>
-		<!-- End Piwik Tracking Code -->
 
 	</body>
 </html>

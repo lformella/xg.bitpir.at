@@ -31,7 +31,7 @@ use XG\Classes\View;
 class Index extends Base
 {
 	/**
-	 * @param array $request
+	 * @param array   $request
 	 * @param Service $service
 	 */
 	public function __construct (array $request, Service $service)
@@ -52,15 +52,7 @@ class Index extends Base
 	 */
 	private function indexAction ()
 	{
-		$searchOption = new SearchOption();
-		$searchOption->Page = 0;
-		$searchOption->Start = 0;
-		$searchOption->Limit = 1;
-		$searchOption->SortBy = "timestamp";
-		$searchOption->SortDesc = true;
-
-		$snapshot = $this->service->GetSnapshots($searchOption);
-		$snapshot = $snapshot[0];
+		$snapshot = $this->service->GetSnapshot();
 		$searches = $this->service->GetSearches(50);
 
 		$view = new View();
